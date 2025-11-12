@@ -1,13 +1,14 @@
 package com.miaraylight.pizzamore.models;
 
 public abstract class OrderItem {
-    public String name;
-    public String size;
-    public double price;
+    private String name;
+    private Size size;
+    private double price;
 
-    public OrderItem(String name, String size) {
+    public OrderItem(String name, Size size, double price) {
         this.name = name;
         this.size = size;
+        this.price = price;
     }
 
     public String getName() {
@@ -18,15 +19,15 @@ public abstract class OrderItem {
         this.name = name;
     }
 
-    public String getSize() {
+    public Size getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(Size size) {
         this.size = size;
     }
 
-    public void setPrize(double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

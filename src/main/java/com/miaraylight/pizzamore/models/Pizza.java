@@ -2,6 +2,8 @@ package com.miaraylight.pizzamore.models;
 
 import java.util.List;
 
+
+
 public class Pizza extends OrderItem {
     private String crustType;
     private String sauceType;
@@ -10,59 +12,78 @@ public class Pizza extends OrderItem {
     private List<String> cheese;
     private List<String> sides;
 
-    public Pizza(String name, String size, String crustType, String sauceType, List<String> premiumToppings, List<String> regularToppings, List<String> cheese, List<String> sides) {
-        super(name, size);
+    private static final double SMALL_CRUST_PRICE = 8.50;
+    private static final double MEDIUM_CRUST_PRICE = 12.00;
+    private static final double LARGE_CRUST_PRICE = 16.50;
+
+    // Meats
+    private static final double SMALL_MEAT_PRICE = 1.00;
+    private static final double MEDIUM_MEAT_PRICE = 2.00;
+    private static final double LARGE_MEAT_PRICE = 3.00;
+
+    private static final double SMALL_EXTRA_MEAT = 0.50;
+    private static final double MEDIUM_EXTRA_MEAT = 1.00;
+    private static final double LARGE_EXTRA_MEAT = 1.50;
+
+    // Cheese
+    private static final double SMALL_CHEESE_PRICE = 0.75;
+    private static final double MEDIUM_CHEESE_PRICE = 1.50;
+    private static final double LARGE_CHEESE_PRICE = 2.25;
+
+    private static final double SMALL_EXTRA_CHEESE = 0.30;
+    private static final double MEDIUM_EXTRA_CHEESE = 0.60;
+    private static final double LARGE_EXTRA_CHEESE = 0.90;
+
+    public Pizza(String name, Size size, String crustType, String sauceType, List<String> premiumToppings, List<String> regularToppings, List<String> cheese, List<String> sides) {
+        super(name, size, 0.0);
         this.crustType = crustType;
         this.sauceType = sauceType;
         this.premiumToppings = premiumToppings;
         this.regularToppings = regularToppings;
         this.cheese = cheese;
         this.sides = sides;
+        setPrice(calculatePrice());
     }
 
-    private double calculateCrustPrice() {
-        return switch (size) {
-            case "S" -> 8.50;
-            case "M" -> 12.00;
-            case "L" -> 16.50;
-            default -> {
-                System.out.println("⚠️ Unknown size '" + size + "', defaulting to medium price.");
-                yield 12.50;
-            }
+    private double getCrustPrice() {
+        return switch (getSize()) {
+            case SMALL -> SMALL_CRUST_PRICE;
+            case MEDIUM -> MEDIUM_CRUST_PRICE;
+            case LARGE -> LARGE_CRUST_PRICE;
+            default -> MEDIUM_CRUST_PRICE;
         };
     }
 
-    private double calculatePremiumToppingsPrice() {
-        double totalPremiumToppingsPrice = switch (size) {
-            case "S" -> 1.00;
-            case "M" -> 2.00;
-            case "L" -> 3.00;
-            default -> {
-                System.out.println("⚠️ Unknown size '" + size + "', defaulting to medium price.");
-                yield 2.00;
-            }
-        };
+    private double getPremiumToppingsPrice() {
+        if (premiumToppings.isEmpty()) return 0.0;
 
-        if (premiumToppings.size() >= 2) {
-            for (int i = 1; i < premiumToppings.size(); i++) {
-                totalPremiumToppingsPrice += switch (size) {
-                    case "S" -> .50;
-                    case "M" -> 1.00;
-                    case "L" -> 1.75;
-                    default -> {
-                        System.out.println("⚠️ Unknown size '" + size + "', defaulting to medium price.");
-                        yield 2.00;
-                    }
-                };
-            }
+        double premiumToppingPrice = 0.0, extraToppingPrice = 0.0;
 
-
+        switch (getSize()) {
+            case SMALL -> {premiumToppingPrice = SMALL_MEAT_PRICE; extraToppingPrice = SMALL_EXTRA_MEAT;}
+            case MEDIUM -> {premiumToppingPrice = MEDIUM_MEAT_PRICE; extraToppingPrice = MEDIUM_EXTRA_MEAT;}
+            case LARGE -> {premiumToppingPrice = LARGE_MEAT_PRICE; extraToppingPrice = LARGE_EXTRA_MEAT;}
         }
-        return totalPremiumToppingsPrice;
+
+        return premiumToppingPrice + ((premiumToppings.size() - 1) * extraToppingPrice);
+    }
+
+    private double getCheesePrice() {
+        if(cheese.isEmpty()) return 0.0;
+
+        double cheesePrize = 0.0, extraCheesePrize = 0.0;
+
+        switch (getSize()) {
+            case SMALL -> {cheesePrize = SMALL_CHEESE_PRICE; extraCheesePrize = SMALL_EXTRA_CHEESE;}
+            case MEDIUM -> {cheesePrize = MEDIUM_CHEESE_PRICE; extraCheesePrize = MEDIUM_EXTRA_CHEESE;}
+            case LARGE -> {cheesePrize = LARGE_CHEESE_PRICE; extraCheesePrize = LARGE_EXTRA_CHEESE;}
+        }
+
+        return cheesePrize + ((cheese.size() - 1) * extraCheesePrize);
     }
 
     @Override
     public double calculatePrice() {
-        return 0;
+        return getCrustPrice() + getPremiumToppingsPrice() + getCheesePrice();
     }
 }

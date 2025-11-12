@@ -1,23 +1,22 @@
 package com.miaraylight.pizzamore.models;
 
 public class Drink extends OrderItem{
+    private static final double SMALL_DRINK_PRICE = 2.00;
+    private static final double MEDIUM_DRINK_PRICE = 2.50;
+    private static final double LARGE_DRINK_PRICE = 3.00;
 
-    public Drink(String name, String size) {
-        super(name, size);
-        this.price = calculatePrice();
+    public Drink(String name, Size size) {
+        super(name, size, 0.0);
+        setPrice(calculatePrice());
     }
 
+    @Override
     public double calculatePrice() {
-        switch (size) {
-            case "S":
-                return 2.00;
-            case "M":
-                return 2.50;
-            case "L":
-                return 3.00;
-            default:
-                System.out.println("⚠️ Unknown size '" + size + "', defaulting to medium price.");
-                return 2.50;
-        }
+        return switch (getSize()) {
+            case SMALL -> SMALL_DRINK_PRICE;
+            case MEDIUM -> MEDIUM_DRINK_PRICE;
+            case LARGE -> LARGE_DRINK_PRICE;
+            default -> MEDIUM_DRINK_PRICE;
+        };
     }
 }
