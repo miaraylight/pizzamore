@@ -26,15 +26,18 @@ public class Program {
         );
 
         Drink drink = new Drink("Orange juice", Size.SMALL);
-        Bread bread = new Bread("Garlic knots", Size.ONE_SIZE);
+        Bread bread = new Bread("Garlic knots");
         System.out.printf("Your pizza costs: $%.2f%n", pizza.getPrice());
+        System.out.printf("Your drink costs: $%.2f%n", drink.getPrice());
+        System.out.printf("Your bread costs: $%.2f%n", bread.getPrice());
 
         List<OrderItem> orderItems = new ArrayList<>();
         orderItems.add(pizza);
         orderItems.add(drink);
         orderItems.add(bread);
 
-        Order order = new Order(orderItems);
+        Order order = new Order();
+        order.setOrderItems(orderItems);
 
         System.out.println(order.getTotalPrice());
 

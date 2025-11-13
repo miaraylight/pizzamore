@@ -1,11 +1,21 @@
 package com.miaraylight.pizzamore.ui;
 
+import com.miaraylight.pizzamore.models.Order;
+import com.miaraylight.pizzamore.models.OrderItem;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import static com.miaraylight.pizzamore.ui.AnsiColors.*;
 
 public class UserInterface {
     private static final Scanner scanner = new Scanner(System.in);
+    private Order order;
+
+    public void initOrder() {
+        this.order = new Order();
+    }
 
     public void display() {
         int input;
@@ -23,6 +33,7 @@ public class UserInterface {
             switch (input) {
                 case 1:
                     System.out.println("create a function with spinning logo as a loader");
+                    initOrder();
                     runOrderMenu();
                     break;
                 case 0:

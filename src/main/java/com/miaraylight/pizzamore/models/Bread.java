@@ -1,14 +1,12 @@
 package com.miaraylight.pizzamore.models;
 
 public class Bread extends OrderItem{
-    public Bread(String name, Size size) {
-        super(name, size, 0.0);
-        setSize(Size.ONE_SIZE);
-        setPrice(calculatePrice());
+    public Bread(String name) {
+        super(name);
     }
 
     @Override
-    public double calculatePrice() {
+    public double getPrice() {
         return 1.50;
     }
 }

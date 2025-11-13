@@ -1,16 +1,19 @@
 package com.miaraylight.pizzamore.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 
-public class Pizza extends OrderItem {
+public class Pizza extends OrderItem implements Sizable{
+    private Size size;
     private String crustType;
     private String sauceType;
     private List<String> premiumToppings;
     private List<String> regularToppings;
     private List<String> cheese;
     private List<String> sides;
+
 
     private static final double SMALL_CRUST_PRICE = 8.50;
     private static final double MEDIUM_CRUST_PRICE = 12.00;
@@ -34,15 +37,62 @@ public class Pizza extends OrderItem {
     private static final double MEDIUM_EXTRA_CHEESE = 0.60;
     private static final double LARGE_EXTRA_CHEESE = 0.90;
 
+
     public Pizza(String name, Size size, String crustType, String sauceType, List<String> premiumToppings, List<String> regularToppings, List<String> cheese, List<String> sides) {
-        super(name, size, 0.0);
+        super(name);
+        this.size = size;
         this.crustType = crustType;
         this.sauceType = sauceType;
         this.premiumToppings = premiumToppings;
-        this.regularToppings = regularToppings;
+        this.regularToppings = premiumToppings;
         this.cheese = cheese;
         this.sides = sides;
-        setPrice(calculatePrice());
+    }
+
+    @Override
+    public Size getSize() {
+        return size;
+    }
+
+    @Override
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public String addRegularTopping(String regularTopping) {
+        regularToppings.add(regularTopping);
+        return regularToppings.get(regularToppings.size() - 1);
+    }
+
+    public String removeRegularTopping(String regularTopping) {
+        if (regularToppings.remove(regularTopping)) {
+            return regularTopping;
+        }
+        return null;
+    }
+
+    public String addPremiumTopping(String premiumTopping) {
+        premiumToppings.add(premiumTopping);
+        return premiumToppings.get(premiumToppings.size() - 1);
+    }
+
+    public String removePremiumTopping(String premiumTopping) {
+        if (premiumToppings.remove(premiumTopping)) {
+            return premiumTopping;
+        }
+        return null;
+    }
+
+    public String addCheese(String cheeseType) {
+        cheese.add(cheeseType);
+        return cheese.get(cheese.size() - 1);
+    }
+
+    public String removeCheese(String cheeseType) {
+        if (cheese.remove(cheeseType)) {
+            return cheeseType;
+        }
+        return null;
     }
 
     private double getCrustPrice() {
@@ -83,7 +133,8 @@ public class Pizza extends OrderItem {
     }
 
     @Override
-    public double calculatePrice() {
+    public double getPrice() {
         return getCrustPrice() + getPremiumToppingsPrice() + getCheesePrice();
     }
+
 }
