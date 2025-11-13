@@ -3,29 +3,19 @@ package com.miaraylight.pizzamore.models;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class Pizza extends OrderItem implements Sizable{
     private Size size;
-    private String crustType;
-    private String sauceType;
+    private CrustType crustType;
+    private SauceType sauceType;
     private List<String> premiumToppings;
     private List<String> regularToppings;
     private List<String> cheese;
     private List<String> sides;
 
-    public static final String[] PREMIUM_TOPPINGS_OPTIONS = {
-            "Pepperoni", "Sausage", "Ham", "Bacon", "Chicken", "Meatball"
-    };
+//    private List<Topping> premiumToppings;
+//    private List<Topping> regularToppings;
+//    private List<Topping> cheeseTopping;
 
-    public static final String[] REGULAR_TOPPINGS_OPTIONS = {
-            "Onions", "Mushrooms", "Bell Peppers", "Olives", "Tomatoes",
-            "Spinach", "Basil", "Pineapple", "Anchovies"
-    };
-
-    public static final String[] CHEESE_OPTIONS = {
-            "Mozzarella", "Parmesan", "Ricotta", "Goat Cheese", "Buffalo"
-    };
 
     private static final double SMALL_CRUST_PRICE = 8.50;
     private static final double MEDIUM_CRUST_PRICE = 12.00;
@@ -57,7 +47,7 @@ public class Pizza extends OrderItem implements Sizable{
         this.sides = new ArrayList<>();
     }
 
-    public Pizza(String name, Size size, String crustType, String sauceType, List<String> premiumToppings, List<String> regularToppings, List<String> cheese, List<String> sides) {
+    public Pizza(String name, Size size, CrustType crustType, SauceType sauceType, List<String> premiumToppings, List<String> regularToppings, List<String> cheese, List<String> sides) {
         super(name);
         this.size = size;
         this.crustType = crustType;
@@ -78,45 +68,22 @@ public class Pizza extends OrderItem implements Sizable{
         this.size = size;
     }
 
-    public String getCrustType() {
+    public CrustType getCrustType() {
         return crustType;
     }
 
-    public void setCrustType(String crustType) {
+    public void setCrustType(CrustType crustType) {
         this.crustType = crustType;
     }
 
-    public String getSauceType() {
+    public SauceType getSauceType() {
         return sauceType;
     }
 
-    public void setSauceType(String sauceType) {
+    public void setSauceType(SauceType sauceType) {
         this.sauceType = sauceType;
     }
 
-    public boolean addRegularTopping(String regularTopping) {
-        return regularToppings.add(regularTopping);
-    }
-
-    public boolean removeRegularTopping(String regularTopping) {
-        return regularToppings.remove(regularTopping);
-    }
-
-    public boolean addPremiumTopping(String premiumTopping) {
-        return premiumToppings.add(premiumTopping);
-    }
-
-    public boolean removePremiumTopping(String premiumTopping) {
-        return premiumToppings.remove(premiumTopping);
-    }
-
-    public boolean addCheese(String cheeseType) {
-        return cheese.add(cheeseType);
-    }
-
-    public boolean removeCheese(String cheeseType) {
-        return cheese.remove(cheeseType);
-    }
 
     private double getCrustPrice() {
         return switch (getSize()) {
@@ -160,4 +127,16 @@ public class Pizza extends OrderItem implements Sizable{
         return getCrustPrice() + getPremiumToppingsPrice() + getCheesePrice();
     }
 
+    @Override
+    public String toString() {
+        return "Pizza{" +
+                "size=" + size +
+                ", crustType='" + crustType + '\'' +
+                ", sauceType='" + sauceType + '\'' +
+                ", premiumToppings=" + premiumToppings +
+                ", regularToppings=" + regularToppings +
+                ", cheese=" + cheese +
+                ", sides=" + sides +
+                '}';
+    }
 }

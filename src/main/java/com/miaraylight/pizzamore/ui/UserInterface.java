@@ -2,10 +2,8 @@ package com.miaraylight.pizzamore.ui;
 
 import com.miaraylight.pizzamore.models.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Function;
 
 import static com.miaraylight.pizzamore.ui.AnsiColors.*;
 
@@ -85,13 +83,25 @@ public class UserInterface {
             switch (choice) {
                 case "S":
                     System.out.println("Signature Pizza selected.");
+                    Pizza signature = getSignaturePizza();
+                    System.out.println(getSignaturePizza());
+                    System.out.println("Would you like to customize it? (y/n)");
+                    String customize = scanner.nextLine().trim().toUpperCase();
+                    if (customize.equalsIgnoreCase("y")) {
+                        Pizza customizedSignature = runCustomizeMenu(signature);
+                        order.addToOrder(customizedSignature);
+                    }
+                    order.addToOrder(signature);
+                    System.out.println("order");
+                    System.out.println(order);
                     break;
                 case "V":
                     System.out.println("Veggie Pizza selected.");
+                    order.addToOrder(getVeggiePizza());
                     break;
                 case "M":
                     System.out.println("Let's build it!");
-                    runCustomizeMenu();
+                    runBuildMenu();
                     break;
                 case "X":
                     running = false;
@@ -103,7 +113,7 @@ public class UserInterface {
         }
     }
 
-    private void runCustomizeMenu() {
+    private void runBuildMenu() {
         boolean running = true;
 
         while (running) {
@@ -127,10 +137,10 @@ public class UserInterface {
                     String crust = getUserInput("Choose crust type:");
 
                     switch (crust) {
-                        case "1": pizza.setCrustType("Thin"); break;
-                        case "2": pizza.setCrustType("Regular"); break;
-                        case "3": pizza.setCrustType("Thick"); break;
-                        case "4": pizza.setCrustType("Cauliflower"); break;
+                        case "1": pizza.setCrustType(CrustType.THIN); break;
+                        case "2": pizza.setCrustType(CrustType.REGULAR); break;
+                        case "3": pizza.setCrustType(CrustType.THICK); break;
+                        case "4": pizza.setCrustType(CrustType.CAULIFLOWER); break;
                         default:
                             System.out.println("❌ Invalid crust option.");
                             continue;
@@ -144,12 +154,12 @@ public class UserInterface {
                     String sauce = getUserInput("Choose sauce:");
 
                     switch (sauce) {
-                        case "1": pizza.setSauceType("Marinara"); break;
-                        case "2": pizza.setSauceType("Alfredo"); break;
-                        case "3": pizza.setSauceType("Pesto"); break;
-                        case "4": pizza.setSauceType("BBQ"); break;
-                        case "5": pizza.setSauceType("Buffalo"); break;
-                        case "6": pizza.setSauceType("Olive Oil"); break;
+                        case "1": pizza.setSauceType(SauceType.MARINARA); break;
+                        case "2": pizza.setSauceType(SauceType.ALFREDO); break;
+                        case "3": pizza.setSauceType(SauceType.PESTO); break;
+                        case "4": pizza.setSauceType(SauceType.BBQ); break;
+                        case "5": pizza.setSauceType(SauceType.BUFFALO); break;
+                        case "6": pizza.setSauceType(SauceType.OLIVE_OIL); break;
                         default:
                             System.out.println("❌ Invalid sauce option.");
                             continue;
@@ -256,6 +266,166 @@ public class UserInterface {
                     System.out.println("Adding to your order...");
                     System.out.println("Added!");
                     running = false;
+                    // 🔙 EXIT
+                case 0:
+                    System.out.println("Returning to main menu...");
+                    running = false;
+                    break;
+
+                default:
+                    System.out.println("❌ Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private Pizza runCustomizeMenu(Pizza pizza) {
+        boolean running = true;
+
+        while (running) {
+            displayCustomizePizzaMenu();
+            System.out.print("What would you like to customize? ");
+            int input = scanner.nextInt();
+            scanner.nextLine();
+
+
+            switch (input) {
+
+                // 🍕 PIZZA SIZE
+                case 1:
+                    pizza.setSize(askForSize(UserInterface::displayPizzaSizeMenu));
+                    break;
+
+                // 🫓 CRUST
+                case 2:
+                    displayPizzaCrustMenu();
+                    System.out.println("Original crust type is " + pizza.getCrustType());
+                    String crust = getUserInput("Choose crust type:");
+
+                    switch (crust) {
+                        case "1": pizza.setCrustType(CrustType.THIN); break;
+                        case "2": pizza.setCrustType(CrustType.REGULAR); break;
+                        case "3": pizza.setCrustType(CrustType.THICK); break;
+                        case "4": pizza.setCrustType(CrustType.CAULIFLOWER); break;
+                        default:
+                            System.out.println("❌ Invalid crust option.");
+                            continue;
+                    }
+                    System.out.println("✅ Selected crust: " + pizza.getCrustType());
+                    break;
+
+                // 🍅 SAUCE
+                case 3:
+                    displayPizzaSauceMenu();
+                    System.out.println("Original sauce type is " + pizza.getSauceType());
+                    String sauce = getUserInput("Choose sauce:");
+
+                    switch (sauce) {
+                        case "1": pizza.setSauceType(SauceType.MARINARA); break;
+                        case "2": pizza.setSauceType(SauceType.ALFREDO); break;
+                        case "3": pizza.setSauceType(SauceType.PESTO); break;
+                        case "4": pizza.setSauceType(SauceType.BBQ); break;
+                        case "5": pizza.setSauceType(SauceType.BUFFALO); break;
+                        case "6": pizza.setSauceType(SauceType.OLIVE_OIL); break;
+                        default:
+                            System.out.println("❌ Invalid sauce option.");
+                            continue;
+                    }
+                    System.out.println("✅ Selected sauce: " + pizza.getSauceType());
+                    break;
+
+                // 🍖 PREMIUM TOPPINGS
+                case 4:
+                    displayPremiumToppingMenu();
+                    System.out.println("Original protein toppings" + pizza.getCrustType());
+                    //System.out.println("Original protein toppings" + pizza.getToppings(ToppingType.Premium));
+                    System.out.println("You can choose single or multiple option (each extra protein for .30");
+                    String premium = getUserInput("Choose protein (1–6)");
+                    //implement logic handling multiple input
+
+                    String premiumTopping = "";
+
+                    switch (premium) {
+                        case "1": premiumTopping = "Pepperoni"; break;
+                        case "2": premiumTopping = "Sausage"; break;
+                        case "3": premiumTopping = "Ham"; break;
+                        case "4": premiumTopping = "Bacon"; break;
+                        case "5": premiumTopping = "Chicken"; break;
+                        case "6": premiumTopping = "Meatball"; break;
+                        case "0": premiumTopping = ""; break;
+                        default:
+                            System.out.println("❌ Invalid protein option.");
+                            continue;
+                    }
+                    System.out.println("✅ Added premium topping: " + premiumTopping);
+                    break;
+
+                // 🥦 REGULAR TOPPINGS
+                case 5:
+                    displayRegularToppingMenu();
+                    System.out.println("You can choose single or multiple option");
+                    String regular = getUserInput("Choose topping (1–9):");
+                    //implement logic handling multiple input
+                    String regularTopping = "";
+
+                    switch (regular) {
+                        case "1": regularTopping = "Onions"; break;
+                        case "2": regularTopping = "Mushrooms"; break;
+                        case "3": regularTopping = "Bell Peppers"; break;
+                        case "4": regularTopping = "Olives"; break;
+                        case "5": regularTopping = "Tomatoes"; break;
+                        case "6": regularTopping = "Spinach"; break;
+                        case "7": regularTopping = "Basil"; break;
+                        case "8": regularTopping = "Pineapple"; break;
+                        case "9": regularTopping = "Anchovies"; break;
+                        case "0": regularTopping = ""; break;
+                        default:
+                            System.out.println("❌ Invalid topping option.");
+                            continue;
+                    }
+                    System.out.println(regularTopping.isEmpty() ? "No toppings" : "✅ Added regular topping: " + regularTopping );
+                    break;
+
+                // 🧀 CHEESE
+                case 6:
+                    displayCheeseToppingMenu();
+                    System.out.println("You can choose single or multiple option");
+                    String cheeseInput = getUserInput("Choose cheese (1–5):");
+                    String cheese = "";
+
+                    switch (cheeseInput) {
+                        case "1": cheese = "Mozzarella"; break;
+                        case "2": cheese = "Parmesan"; break;
+                        case "3": cheese = "Ricotta"; break;
+                        case "4": cheese = "Goat Cheese"; break;
+                        case "5": cheese = "Buffalo"; break;
+                        default:
+                            System.out.println("❌ Invalid cheese option.");
+                            continue;
+                    }
+                    System.out.println("✅ Added cheese: " + cheese);
+                    break;
+
+                // 🍽 SIDES
+                case 7:
+                    displaySidesMenu();
+                    String sideInput = getUserInput("Choose side (1–2):");
+                    String side = "";
+
+                    switch (sideInput) {
+                        case "1": side = "Red Pepper"; break;
+                        case "2": side = "Parmesan"; break;
+                        case "0": side = ""; break;
+                        default:
+                            System.out.println("❌ Invalid side option.");
+                            continue;
+                    }
+                    System.out.println("✅ Added side: " + side);
+                    break;
+                case 8:
+                    //save pizza
+                    System.out.println("Adding to your order...");
+                    System.out.println("Added!");
+                    running = false;
                 // 🔙 EXIT
                 case 0:
                     System.out.println("Returning to main menu...");
@@ -266,6 +436,8 @@ public class UserInterface {
                     System.out.println("❌ Invalid choice. Please try again.");
             }
         }
+
+        return pizza;
     }
 
     public void runDrinksMenu() {
@@ -537,6 +709,33 @@ public class UserInterface {
         String sizeChoice = getUserInput("Enter size: ");
 
         return Size.fromInput(sizeChoice);
+
+    }
+
+    public Pizza getSignaturePizza() {
+        return new Pizza(
+                "Signature",
+                Size.MEDIUM,
+                CrustType.REGULAR,
+                SauceType.ALFREDO,
+                List.of( "Pepperoni", "Sausage", "Ham", "Bacon"),
+                List.of("Bell Peppers", "Olives", "Tomatoes"),
+                List.of("Mozzarella", "Parmesan"),
+                List.of("Red Pepper")
+        );
+
+    }
+    public Pizza getVeggiePizza() {
+        return new Pizza(
+                "Veggie",
+                Size.MEDIUM,
+                CrustType.CAULIFLOWER,
+                SauceType.MARINARA,
+                List.of(),
+                List.of("Bell Peppers", "Olives", "Tomatoes", "Onions", "Mushrooms", "Spinach"),
+                List.of("Ricotta"),
+                List.of()
+        );
 
     }
 }

@@ -31,4 +31,13 @@ public class Order {
         orderItems.add(orderItem);
         return orderItem;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderNumber=" + orderNumber +
+                ", orderItems=" + orderItems +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
 }
