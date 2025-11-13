@@ -1,7 +1,6 @@
 package com.miaraylight.pizzamore.models;
 
 public enum Size {
-    ONE_SIZE("O", "One size"),
     SMALL("S", "Small"),
     MEDIUM("M", "Medium"),
     LARGE("L", "Large");
@@ -27,7 +26,6 @@ public enum Size {
         input = input.trim().toUpperCase();
 
         return switch (input) {
-            case "O", "ONE_SIZE" -> ONE_SIZE;
             case "S", "SMALL" -> SMALL;
             case "L", "LARGE" -> LARGE;
             default -> MEDIUM;

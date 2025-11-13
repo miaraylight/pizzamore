@@ -14,6 +14,18 @@ public class Pizza extends OrderItem implements Sizable{
     private List<String> cheese;
     private List<String> sides;
 
+    public static final String[] PREMIUM_TOPPINGS_OPTIONS = {
+            "Pepperoni", "Sausage", "Ham", "Bacon", "Chicken", "Meatball"
+    };
+
+    public static final String[] REGULAR_TOPPINGS_OPTIONS = {
+            "Onions", "Mushrooms", "Bell Peppers", "Olives", "Tomatoes",
+            "Spinach", "Basil", "Pineapple", "Anchovies"
+    };
+
+    public static final String[] CHEESE_OPTIONS = {
+            "Mozzarella", "Parmesan", "Ricotta", "Goat Cheese", "Buffalo"
+    };
 
     private static final double SMALL_CRUST_PRICE = 8.50;
     private static final double MEDIUM_CRUST_PRICE = 12.00;
@@ -37,6 +49,13 @@ public class Pizza extends OrderItem implements Sizable{
     private static final double MEDIUM_EXTRA_CHEESE = 0.60;
     private static final double LARGE_EXTRA_CHEESE = 0.90;
 
+    public Pizza(String name) {
+        super(name);
+        this.premiumToppings = new ArrayList<>();
+        this.regularToppings = new ArrayList<>();
+        this.cheese = new ArrayList<>();
+        this.sides = new ArrayList<>();
+    }
 
     public Pizza(String name, Size size, String crustType, String sauceType, List<String> premiumToppings, List<String> regularToppings, List<String> cheese, List<String> sides) {
         super(name);
@@ -44,7 +63,7 @@ public class Pizza extends OrderItem implements Sizable{
         this.crustType = crustType;
         this.sauceType = sauceType;
         this.premiumToppings = premiumToppings;
-        this.regularToppings = premiumToppings;
+        this.regularToppings = regularToppings;
         this.cheese = cheese;
         this.sides = sides;
     }
@@ -59,40 +78,44 @@ public class Pizza extends OrderItem implements Sizable{
         this.size = size;
     }
 
-    public String addRegularTopping(String regularTopping) {
-        regularToppings.add(regularTopping);
-        return regularToppings.get(regularToppings.size() - 1);
+    public String getCrustType() {
+        return crustType;
     }
 
-    public String removeRegularTopping(String regularTopping) {
-        if (regularToppings.remove(regularTopping)) {
-            return regularTopping;
-        }
-        return null;
+    public void setCrustType(String crustType) {
+        this.crustType = crustType;
     }
 
-    public String addPremiumTopping(String premiumTopping) {
-        premiumToppings.add(premiumTopping);
-        return premiumToppings.get(premiumToppings.size() - 1);
+    public String getSauceType() {
+        return sauceType;
     }
 
-    public String removePremiumTopping(String premiumTopping) {
-        if (premiumToppings.remove(premiumTopping)) {
-            return premiumTopping;
-        }
-        return null;
+    public void setSauceType(String sauceType) {
+        this.sauceType = sauceType;
     }
 
-    public String addCheese(String cheeseType) {
-        cheese.add(cheeseType);
-        return cheese.get(cheese.size() - 1);
+    public boolean addRegularTopping(String regularTopping) {
+        return regularToppings.add(regularTopping);
     }
 
-    public String removeCheese(String cheeseType) {
-        if (cheese.remove(cheeseType)) {
-            return cheeseType;
-        }
-        return null;
+    public boolean removeRegularTopping(String regularTopping) {
+        return regularToppings.remove(regularTopping);
+    }
+
+    public boolean addPremiumTopping(String premiumTopping) {
+        return premiumToppings.add(premiumTopping);
+    }
+
+    public boolean removePremiumTopping(String premiumTopping) {
+        return premiumToppings.remove(premiumTopping);
+    }
+
+    public boolean addCheese(String cheeseType) {
+        return cheese.add(cheeseType);
+    }
+
+    public boolean removeCheese(String cheeseType) {
+        return cheese.remove(cheeseType);
     }
 
     private double getCrustPrice() {

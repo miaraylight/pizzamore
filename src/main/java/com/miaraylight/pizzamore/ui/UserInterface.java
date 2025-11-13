@@ -1,11 +1,11 @@
 package com.miaraylight.pizzamore.ui;
 
-import com.miaraylight.pizzamore.models.Order;
-import com.miaraylight.pizzamore.models.OrderItem;
+import com.miaraylight.pizzamore.models.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
 
 import static com.miaraylight.pizzamore.ui.AnsiColors.*;
 
@@ -112,69 +112,66 @@ public class UserInterface {
             int input = scanner.nextInt();
             scanner.nextLine();
 
+            Pizza pizza = new Pizza("My style pizza");
+
             switch (input) {
 
                 // 🍕 PIZZA SIZE
                 case 1:
-                    displayPizzaSizeMenu();
-                    String size = getUserInput("Choose size (S/M/L):");
-                    int pizzaSize = 0;
-
-                    switch (size) {
-                        case "S": pizzaSize = 8; break;
-                        case "M": pizzaSize = 12; break;
-                        case "L": pizzaSize = 16; break;
-                        default:
-                            System.out.println("❌ Invalid size option.");
-                            continue;
-                    }
-                    System.out.println("✅ Selected size: " + pizzaSize + " inch");
+                    pizza.setSize(askForSize(UserInterface::displayPizzaSizeMenu));
                     break;
 
                 // 🫓 CRUST
                 case 2:
                     displayPizzaCrustMenu();
                     String crust = getUserInput("Choose crust type:");
-                    String crustType = "";
 
                     switch (crust) {
-                        case "1": crustType = "Thin"; break;
-                        case "2": crustType = "Regular"; break;
-                        case "3": crustType = "Thick"; break;
-                        case "4": crustType = "Cauliflower"; break;
+                        case "1": pizza.setCrustType("Thin"); break;
+                        case "2": pizza.setCrustType("Regular"); break;
+                        case "3": pizza.setCrustType("Thick"); break;
+                        case "4": pizza.setCrustType("Cauliflower"); break;
                         default:
                             System.out.println("❌ Invalid crust option.");
                             continue;
                     }
-                    System.out.println("✅ Selected crust: " + crustType);
+                    System.out.println("✅ Selected crust: " + pizza.getCrustType());
                     break;
 
                 // 🍅 SAUCE
                 case 3:
                     displayPizzaSauceMenu();
-                    String sauce = getUserInput("Choose sauce (A/S/D/J/K/L):");
-                    String sauceType = "";
+                    String sauce = getUserInput("Choose sauce:");
 
                     switch (sauce) {
-                        case "1": sauceType = "Marinara"; break;
-                        case "2": sauceType = "Alfredo"; break;
-                        case "3": sauceType = "Pesto"; break;
-                        case "4": sauceType = "BBQ"; break;
-                        case "5": sauceType = "Buffalo"; break;
-                        case "6": sauceType = "Olive Oil"; break;
+                        case "1": pizza.setSauceType("Marinara"); break;
+                        case "2": pizza.setSauceType("Alfredo"); break;
+                        case "3": pizza.setSauceType("Pesto"); break;
+                        case "4": pizza.setSauceType("BBQ"); break;
+                        case "5": pizza.setSauceType("Buffalo"); break;
+                        case "6": pizza.setSauceType("Olive Oil"); break;
                         default:
                             System.out.println("❌ Invalid sauce option.");
                             continue;
                     }
-                    System.out.println("✅ Selected sauce: " + sauceType);
+                    System.out.println("✅ Selected sauce: " + pizza.getSauceType());
                     break;
 
                 // 🍖 PREMIUM TOPPINGS
                 case 4:
                     displayPremiumToppingMenu();
+                    String[] premiumToppingsOptions = {
+                            "Pepperoni", // 1
+                            "Sausage",   // 2
+                            "Ham",       // 3
+                            "Bacon",     // 4
+                            "Chicken",   // 5
+                            "Meatball"   // 6
+                    };
                     System.out.println("You can choose single or multiple option (each extra protein for .30");
                     String premium = getUserInput("Choose protein (1–6)");
                     //implement logic handling multiple input
+
                     String premiumTopping = "";
 
                     switch (premium) {
@@ -278,23 +275,39 @@ public class UserInterface {
             displayDrinksMenu();
             String choice = getUserInput("Choose a drink: ");
 
+            if("0".equals(choice)) {
+                System.out.println("🚫 Returning to main menu...");
+                running = false;
+                break;
+            }
+
+            Drink drink = null;
+
             switch (choice) {
                 case "1":
-                    System.out.println("🥤 You chose a Smoothie!");
-                    // Add Smoothie to order
+                    drink = new Drink("Smoothie", askForSize(UserInterface::displaySizeMenu));
+                    System.out.println("🥤You chose Smoothie!");
                     break;
                 case "2":
+                    drink = new Drink("Orange Juice", askForSize(UserInterface::displaySizeMenu));
                     System.out.println("🍊 You chose Orange Juice!");
-                    // Add Orange Juice to order
-                    break;
-                case "0":
-                    System.out.println("🚫 No drinks selected. Going back...");
-                    running = false;
                     break;
                 default:
                     System.out.println("❌ Invalid choice. Please try again.");
+                    continue;
+            }
+
+            if(drink != null) {
+                System.out.println("✅ Added " + drink.getSize() + " " + drink.getName() + " — Price: $" + drink.getPrice());
+                order.addToOrder(drink);
+            }
+
+            String more = getUserInput("Do you want to add another drink? (y/n): ");
+            if (!more.equalsIgnoreCase("y")) {
+                running = false; // exit loop and return to main menu
             }
         }
+        System.out.println("🛒 Returning to main menu with your drinks added.");
     }
 
     public void runBreadMenu() {
@@ -304,28 +317,42 @@ public class UserInterface {
             displayBreadMenu();
             String choice = getUserInput("Choose a bread option: ").trim().toUpperCase();
 
+            if (choice.equals("0")) {
+                System.out.println("🚫 Returning to main menu...");
+                running = false;
+                break;
+            }
+
+            Bread bread = null;
+
             switch (choice) {
                 case "1":
+                    bread = new Bread("Garlic Knots");
                     System.out.println("🥖 You chose Garlic Knots!");
-                    // addToOrder("Garlic Knots");
                     break;
                 case "2":
-                    System.out.println("🍞 You chose Breadsticks!");
-                    // addToOrder("Breadsticks");
+                    bread = new Bread("Bread sticks");
+                    System.out.println("🍞 You chose Bread sticks!");
                     break;
                 case "3":
-                    System.out.println("🧄 You chose Cheesy Garlic Bread!");
-                    // addToOrder("Cheesy Garlic Bread");
-                    break;
-                case "0":
-                case "X":
-                    System.out.println("🚫 No bread selected. Going back...");
-                    running = false;
+                    bread = new Bread("Loaded Tots");
+                    System.out.println("🧄 You chose Loaded Tots!");
                     break;
                 default:
                     System.out.println("❌ Invalid choice. Please try again.");
             }
+
+            if (bread != null) {
+                System.out.println("✅ Added " + bread.getName() + " — Price: $" + bread.getPrice());
+                order.addToOrder(bread);
+            }
+
+            String more = getUserInput("Do you want to add another bread? (y/n):");
+            if (!more.equalsIgnoreCase("y")) running = false;
+
         }
+
+        System.out.println("🛒 Returning to main menu with your breads added.");
     }
 
     // display
@@ -478,9 +505,19 @@ public class UserInterface {
         System.out.println(CYAN + "               Choose your bread side        " + RESET);
         System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
         System.out.println("  " + GREEN + "[1]" + RESET + " 🥖 Garlic Knots");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Breadsticks");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🧄 Cheesy Garlic Bread");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Bread sticks");
+        System.out.println("  " + GREEN + "[3]" + RESET + " 🧄 Loaded tots");
         System.out.println("  " + MAGENTA + "[0]" + RESET + " 🚫 No Bread / Go Back");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displaySizeMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "                Choose a size               " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[S]" + RESET + " Small");
+        System.out.println("  " + GREEN + "[M]" + RESET + " Medium");
+        System.out.println("  " + GREEN + "[L]" + RESET + " Large");
         System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
     }
 
@@ -492,5 +529,14 @@ public class UserInterface {
     public static String getUserInput(String prompt) {
         System.out.print(prompt + " ");
         return scanner.nextLine().trim().toUpperCase();
+    }
+
+    private Size askForSize(Runnable displaySizeMenu) {
+        displaySizeMenu();
+
+        String sizeChoice = getUserInput("Enter size: ");
+
+        return Size.fromInput(sizeChoice);
+
     }
 }
