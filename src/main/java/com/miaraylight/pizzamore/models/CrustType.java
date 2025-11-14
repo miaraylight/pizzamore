@@ -1,25 +1,14 @@
 package com.miaraylight.pizzamore.models;
 
 public enum CrustType {
-    THIN("1", "Thin"),
-    REGULAR("2", "Regular"),
-    THICK("3", "Thick"),
-    CAULIFLOWER("4", "Cauliflower");
+    THIN("1", "Thin"), REGULAR("2", "Regular"), THICK("3", "Thick"), CAULIFLOWER("4", "Cauliflower");
 
-    private String code;
-    private String label;
+    private final String code;
+    private final String label;
 
     CrustType(String code, String label) {
         this.code = code;
         this.label = label;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getLabel() {
-        return label;
     }
 
     public static CrustType fromInput(String input) {
@@ -34,12 +23,16 @@ public enum CrustType {
         };
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
 
     @Override
     public String toString() {
-        return "CrustType{" +
-                "code='" + code + '\'' +
-                ", label='" + label + '\'' +
-                '}';
+        return label;
     }
 }

@@ -15,8 +15,8 @@ public abstract class OrderItem {
         this.name = name;
     }
 
+    public abstract double getPrice();
+
     public void setPrice(double price) {
     }
-
-    public abstract double getPrice();
 }

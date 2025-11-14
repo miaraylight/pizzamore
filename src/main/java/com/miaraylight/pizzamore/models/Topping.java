@@ -43,18 +43,6 @@ public enum Topping {
         this(label, category, 0.0);
     }
 
-    public String getLabel() {
-        return label;
-    }
-
-    public ToppingCategory getCategory() {
-        return category;
-    }
-
-    public double getBasePrice() {
-        return basePrice;
-    }
-
     public static Topping fromInput(String input) {
         if (input == null) return null;
         input = input.trim().toUpperCase();
@@ -68,16 +56,27 @@ public enum Topping {
         return null; // not found
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public ToppingCategory getCategory() {
+        return category;
+    }
+
+    public double getBasePrice() {
+        return basePrice;
+    }
+
     @Override
     public String toString() {
         return label;
     }
 
-        public enum ToppingCategory {
+    public enum ToppingCategory {
         PREMIUM, CHEESE, REGULAR
     }
 }
-
 
 
 //public class Topping {

@@ -1,6 +1,6 @@
 package com.miaraylight.pizzamore.models;
 
-public class Bread extends OrderItem{
+public class Bread extends OrderItem {
     public Bread(String name) {
         super(name);
     }

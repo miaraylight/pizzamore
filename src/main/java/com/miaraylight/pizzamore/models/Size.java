@@ -13,14 +13,6 @@ public enum Size {
         this.label = label;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
     public static Size fromInput(String input) {
         if (input == null) return MEDIUM; // by default set to medium
         input = input.trim().toUpperCase();
@@ -32,10 +24,16 @@ public enum Size {
         };
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
     @Override
     public String toString() {
-        return "Size{" +
-                "label='" + label + '\'' +
-                '}';
+        return label;
     }
 }

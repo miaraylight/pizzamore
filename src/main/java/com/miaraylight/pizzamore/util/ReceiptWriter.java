@@ -5,34 +5,15 @@ import com.miaraylight.pizzamore.models.OrderItem;
 import com.miaraylight.pizzamore.models.Pizza;
 
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ReceiptWriter {
 
     private static final String RECEIPT_FOLDER = "receipts";
-
-    public static void writeReceipt(Order order) {
-        try {
-            Path folder = Paths.get(RECEIPT_FOLDER);
-            if (!Files.exists(folder)) {
-                Files.createDirectory(folder);
-            }
-
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
-            String filename = timestamp + ".txt";
-            Path filePath = folder.resolve(filename);
-
-            Files.writeString(filePath, buildReceipt(order));
-
-            System.out.println("📄 Receipt created: " + filePath.toAbsolutePath());
-
-        } catch (IOException e) {
-            System.out.println("❌ ERROR: Could not write receipt!");
-            e.printStackTrace();
-        }
-    }
 
     private static String buildReceipt(Order order) {
         StringBuilder sb = new StringBuilder();
@@ -64,12 +45,33 @@ public class ReceiptWriter {
             sb.append(String.format("Discount:              -$%6.2f%n", order.getSubtotal() - order.getTotalPrice() + order.getTax()));
         }
 
-        sb.append(String.format("Tax (7%%):              $%6.2f%n", order.getTax()));
+        sb.append(String.format("Tax (2%%):              $%6.2f%n", order.getTax()));
         sb.append("╠══════════════════════════════════════╣\n");
 
         sb.append(String.format("TOTAL:                 $%6.2f%n", order.getTotalPrice()));
         sb.append("╚══════════════════════════════════════╝\n");
 
         return sb.toString();
+    }
+
+    public void writeReceipt(Order order) {
+        try {
+            Path folder = Paths.get(RECEIPT_FOLDER);
+            if (!Files.exists(folder)) {
+                Files.createDirectory(folder);
+            }
+
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+            String filename = timestamp + ".txt";
+            Path filePath = folder.resolve(filename);
+
+            Files.writeString(filePath, buildReceipt(order));
+
+            System.out.println("📄 Receipt created: " + filePath.toAbsolutePath());
+
+        } catch (IOException e) {
+            System.out.println("❌ ERROR: Could not write receipt!");
+            e.printStackTrace();
+        }
     }
 }

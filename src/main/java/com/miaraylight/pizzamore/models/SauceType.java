@@ -16,14 +16,6 @@ public enum SauceType {
         this.label = label;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
     public static SauceType fromInput(String input) {
         if (input == null) return MARINARA;
         input = input.trim().toUpperCase();
@@ -39,11 +31,16 @@ public enum SauceType {
         };
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
     @Override
     public String toString() {
-        return "SauceType{" +
-                "code='" + code + '\'' +
-                ", label='" + label + '\'' +
-                '}';
+        return label;
     }
 }

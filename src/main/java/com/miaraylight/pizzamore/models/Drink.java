@@ -1,11 +1,10 @@
 package com.miaraylight.pizzamore.models;
 
-public class Drink extends OrderItem implements Sizable{
-    private Size size;
-
+public class Drink extends OrderItem implements Sizable {
     private static final double SMALL_DRINK_PRICE = 2.00;
     private static final double MEDIUM_DRINK_PRICE = 2.50;
     private static final double LARGE_DRINK_PRICE = 3.00;
+    private Size size;
 
     public Drink(String name, Size size) {
         super(name);

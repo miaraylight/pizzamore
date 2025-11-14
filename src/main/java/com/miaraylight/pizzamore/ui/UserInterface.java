@@ -1,17 +1,161 @@
 package com.miaraylight.pizzamore.ui;
 
 import com.miaraylight.pizzamore.models.*;
+import com.miaraylight.pizzamore.util.ReceiptWriter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static com.miaraylight.pizzamore.ui.AnsiColors.*;
 
 public class UserInterface {
     private static final Scanner scanner = new Scanner(System.in);
     private Order order;
+
+    // display
+    public static void displayMainMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "                   Main Menu                 " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 🍕 Order");
+        System.out.println("  " + MAGENTA + "[0]" + RESET + " ❌ Cancel / Exit");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayOrderMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "               Add to Your Order             " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[P]" + RESET + " 🍕 Pizza");
+        System.out.println("  " + GREEN + "[D]" + RESET + " 🥤 Drinks");
+        System.out.println("  " + GREEN + "[B]" + RESET + " 🧄 Bread");
+        System.out.println("  " + GREEN + "[F]" + RESET + " 💳 Pay Now");
+        System.out.println("  " + MAGENTA + "[X]" + RESET + " 🔙 Cancel");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayPizzaMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "               Choose Your Pizza Type        " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[S]" + RESET + " ⭐ Signature Pizza");
+        System.out.println("  " + GREEN + "[V]" + RESET + " 🥦 Veggie Pizza");
+        System.out.println("  " + GREEN + "[M]" + RESET + " 🍳 Build My Own Pizza");
+        System.out.println("  " + MAGENTA + "[X]" + RESET + " 🔙 Go Back");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayBuildPizzaMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "             Customize Your Pizza            " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 📏 Size");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Crust Type");
+        System.out.println("  " + GREEN + "[3]" + RESET + " 🍅 Sauce");
+        System.out.println("  " + GREEN + "[4]" + RESET + " 🍖 Protein");
+        System.out.println("  " + GREEN + "[5]" + RESET + " 🥦 Toppings");
+        System.out.println("  " + GREEN + "[6]" + RESET + " 🧀 Cheese");
+        System.out.println("  " + GREEN + "[7]" + RESET + " 🍽️ Sides");
+        System.out.println("  " + GREEN + "[8]" + RESET + " ✅ Done");
+        System.out.println("  " + MAGENTA + "[0]" + RESET + " ❌ Go Back");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayPizzaSizeMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "              Choose Your Pizza Size         " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[S]" + RESET + " 🍕 Small (8\")");
+        System.out.println("  " + GREEN + "[M]" + RESET + " 🍕🍕 Medium (12\")");
+        System.out.println("  " + GREEN + "[L]" + RESET + " 🍕🍕🍕 Large (16\")");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayPizzaCrustMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "              Choose Your Pizza Crust        " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 🍞 Thin");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Regular");
+        System.out.println("  " + GREEN + "[3]" + RESET + " 🍞 Thick");
+        System.out.println("  " + GREEN + "[4]" + RESET + " 🥦 Cauliflower");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayPizzaSauceMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "                 Choose Your Sauce           " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 🍅 Marinara");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🧄 Alfredo");
+        System.out.println("  " + GREEN + "[3]" + RESET + " 🌿 Pesto");
+        System.out.println("  " + GREEN + "[4]" + RESET + " 🍖 BBQ");
+        System.out.println("  " + GREEN + "[5]" + RESET + " 🌶️ Buffalo");
+        System.out.println("  " + GREEN + "[6]" + RESET + " 🫒 Olive Oil");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayToppingMenu(List<Topping> toppings, Topping.ToppingCategory category) {
+
+        System.out.println("╔════════════════════════════════════════════╗");
+        System.out.println("            " + category.name());
+        System.out.println("╠════════════════════════════════════════════╣");
+        for (int i = 0; i < toppings.size(); i++) {
+            System.out.printf("  [%d] %s%n", i + 1, toppings.get(i).getLabel());
+        }
+        System.out.println("  [0] No selection");
+        System.out.println("╚════════════════════════════════════════════╝");
+    }
+
+    public static void displaySidesMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "                 Choose Your Sides           " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 🌶️ Red Pepper");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🧂 Parmesan");
+        System.out.println("  " + GREEN + "[0]" + RESET + " 🚫 No Sides");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayDrinksMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "                Choose Your Drinks           " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 🥤 Smoothie");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🍊 Orange Juice");
+        System.out.println("  " + GREEN + "[0]" + RESET + " 🚫 No Drink");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displayBreadMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "               Choose your bread side        " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[1]" + RESET + " 🥖 Garlic Knots");
+        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Bread sticks");
+        System.out.println("  " + GREEN + "[3]" + RESET + " 🧄 Loaded tots");
+        System.out.println("  " + MAGENTA + "[0]" + RESET + " 🚫 No Bread / Go Back");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    public static void displaySizeMenu() {
+        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
+        System.out.println(CYAN + "                Choose a size               " + RESET);
+        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
+        System.out.println("  " + GREEN + "[S]" + RESET + " Small");
+        System.out.println("  " + GREEN + "[M]" + RESET + " Medium");
+        System.out.println("  " + GREEN + "[L]" + RESET + " Large");
+        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
+    }
+
+    // helpers
+    public static String getUserInput(String prompt) {
+        System.out.print(prompt + " ");
+        return scanner.nextLine().trim().toUpperCase();
+    }
 
     public void initOrder() {
         this.order = new Order();
@@ -50,6 +194,9 @@ public class UserInterface {
         boolean running = true;
 
         while (running) {
+            if (!order.getOrderItems().isEmpty()) {
+                displayCurrentOrder(order);
+            }
             displayOrderMenu();
             System.out.println("What to get...");
             String choice = scanner.nextLine().trim().toUpperCase();
@@ -64,6 +211,15 @@ public class UserInterface {
                 case "B":
                     runBreadMenu();
                     break;
+                case "F":
+                    if (!order.getOrderItems().isEmpty()) {
+                        ReceiptWriter receiptWriter = new ReceiptWriter();
+                        receiptWriter.writeReceipt(order);
+                        System.out.println("Thank for choosing us! Enjoy!");
+                    } else {
+                        System.out.println("Cart is empty. Add some stuff.");
+                    }
+
                 case "X":
                     running = false;
                     System.out.println("Returning to main menu...");
@@ -80,30 +236,32 @@ public class UserInterface {
         while (running) {
             displayPizzaMenu();
             System.out.println("Mmmm pizza...");
+            System.out.println("Enter your choice: ");
             String choice = scanner.nextLine().trim().toUpperCase();
 
             switch (choice) {
                 case "S":
                     System.out.println("Signature Pizza selected.");
                     Pizza signature = getSignaturePizza();
-                    System.out.println(getSignaturePizza());
-                    System.out.println("Would you like to customize it? (y/n)");
+
+                    System.out.println("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒");
+                    System.out.println("\nWould you like to customize it? (y/n)");
                     String customize = scanner.nextLine().trim();
                     if (customize.equalsIgnoreCase("y")) {
                         Pizza customizedSignature = runCustomizeMenu(signature);
                         order.addToOrder(customizedSignature);
                     } else if (customize.equalsIgnoreCase("n")) {
                         order.addToOrder(signature);
-                    }else {
+                    } else {
                         System.out.println("Invalid input. Try again");
                     }
-                    System.out.println("order");
-                    System.out.println(order);
                     break;
                 case "V":
                     System.out.println("Veggie Pizza selected.");
                     Pizza veggie = getVeggiePizza();
                     System.out.println(getVeggiePizza());
+
+                    System.out.println("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒");
                     System.out.println("Would you like to customize it? (y/n)");
                     String customizeVeggie = scanner.nextLine().trim();
                     if (customizeVeggie.equalsIgnoreCase("y")) {
@@ -111,11 +269,9 @@ public class UserInterface {
                         order.addToOrder(customizedVeggie);
                     } else if (customizeVeggie.equalsIgnoreCase("n")) {
                         order.addToOrder(veggie);
-                    }else {
+                    } else {
                         System.out.println("Invalid input. Try again");
                     }
-                    System.out.println("order");
-                    System.out.println(order);
                     break;
                 case "M":
                     System.out.println("Let's build it!");
@@ -135,13 +291,13 @@ public class UserInterface {
         boolean running = true;
         Pizza myStylePizza = new Pizza("My style pizza", Size.MEDIUM, CrustType.REGULAR, SauceType.MARINARA, null, null); // default
 
+
         while (running) {
+            displayPizza(myStylePizza);
             displayBuildPizzaMenu();
-            System.out.print("What would you like to customize? ");
+            System.out.print("What would you like to adjust?");
             int input = scanner.nextInt();
             scanner.nextLine();
-
-
 
             switch (input) {
 
@@ -166,153 +322,23 @@ public class UserInterface {
 
                 // 🍖 PREMIUM TOPPINGS
                 case 4:
-                    displayPremiumToppingMenu();
-                    System.out.println("You can choose single or multiple option");
-                    String premium = getUserInput("Choose protein (1–6)");
-                    String premiumTopping = "";
-
-                    if (premium.length() > 1) {
-                        List<String> choices = getValidInput(premium);
-                        System.out.println(choices);
-
-                        for (String choice : choices) {
-                            String label = "";
-                            switch (choice) {
-                                case "1": label = "Pepperoni"; break;
-                                case "2": label = "Sausage"; break;
-                                case "3": label = "Ham"; break;
-                                case "4": label = "Bacon"; break;
-                                case "5": label = "Chicken"; break;
-                                case "6": label = "Meatball"; break;
-                                case "0": break;
-                                default:
-                                    System.out.println("❌ Invalid protein option.");
-                                    continue;
-                            }
-                            myStylePizza.addTopping(Topping.fromInput(label));
-                        }
-                    } else {
-                        switch (premium) {
-                            case "1": premiumTopping = "Pepperoni"; break;
-                            case "2": premiumTopping = "Sausage"; break;
-                            case "3": premiumTopping = "Ham"; break;
-                            case "4": premiumTopping = "Bacon"; break;
-                            case "5": premiumTopping = "Chicken"; break;
-                            case "6": premiumTopping = "Meatball"; break;
-                            case "0": premiumTopping = ""; break;
-                            default:
-                                System.out.println("❌ Invalid protein option.");
-                                continue;
-                        }
-
-                        myStylePizza.addTopping(Topping.fromInput(premiumTopping));
-                        System.out.println("✅ Added premium topping: " + premiumTopping);
-                    }
-
-
-
-
+                    buildToppings(myStylePizza, Topping.ToppingCategory.PREMIUM);
+                    System.out.println("Added protein toppings:");
+                    displayToppingMenu(myStylePizza.getToppingsByCategory(Topping.ToppingCategory.PREMIUM), Topping.ToppingCategory.PREMIUM);
                     break;
 
                 // 🥦 REGULAR TOPPINGS
                 case 5:
-                    displayRegularToppingMenu();
-                    System.out.println("You can choose single or multiple option");
-                    String regular = getUserInput("Choose topping (1–9):");
-                    //implement logic handling multiple input
-                    String regularTopping = "";
-
-                    if (regular.length() > 1) {
-                        List<String> choices = getValidInput(regular);
-
-                        for (String choice : choices) {
-                            String label = "";
-
-                            switch (regular) {
-                                case "1": label = "Onions"; break;
-                                case "2": label = "Mushrooms"; break;
-                                case "3": label = "Bell Peppers"; break;
-                                case "4": label = "Olives"; break;
-                                case "5": label = "Tomatoes"; break;
-                                case "6": label = "Spinach"; break;
-                                case "7": label = "Basil"; break;
-                                case "8": label = "Pineapple"; break;
-                                case "9": label = "Anchovies"; break;
-                                case "0": label = ""; break;
-                                default:
-                                    System.out.println("❌ Invalid topping option.");
-                                    continue;
-                            }
-
-                            myStylePizza.addTopping(Topping.fromInput(label));
-                        }
-                    } else {
-                        switch (regular) {
-                            case "1": regularTopping = "Onions"; break;
-                            case "2": regularTopping = "Mushrooms"; break;
-                            case "3": regularTopping = "Bell Peppers"; break;
-                            case "4": regularTopping = "Olives"; break;
-                            case "5": regularTopping = "Tomatoes"; break;
-                            case "6": regularTopping = "Spinach"; break;
-                            case "7": regularTopping = "Basil"; break;
-                            case "8": regularTopping = "Pineapple"; break;
-                            case "9": regularTopping = "Anchovies"; break;
-                            case "0": regularTopping = ""; break;
-                            default:
-                                System.out.println("❌ Invalid topping option.");
-                                continue;
-                        }
-
-                        myStylePizza.addTopping(Topping.fromInput(regularTopping));
-
-                        System.out.println(myStylePizza );
-                    }
-
-
+                    buildToppings(myStylePizza, Topping.ToppingCategory.REGULAR);
+                    System.out.println("Added regular toppings:");
+                    displayToppingMenu(myStylePizza.getToppingsByCategory(Topping.ToppingCategory.REGULAR), Topping.ToppingCategory.REGULAR);
                     break;
 
                 // 🧀 CHEESE
                 case 6:
-                    displayCheeseToppingMenu();
-                    System.out.println("You can choose single or multiple option");
-                    String cheeseInput = getUserInput("Choose cheese (1–5):");
-                    String cheese = "";
-
-                    if (cheeseInput.length() > 1) {
-                        List<String> choices = getValidInput(cheeseInput);
-                        String label = "";
-
-                        for (String choice : choices) {
-                            switch (cheeseInput) {
-                                case "1": label = "Mozzarella"; break;
-                                case "2": label = "Parmesan"; break;
-                                case "3": label = "Ricotta"; break;
-                                case "4": label = "Goat Cheese"; break;
-                                case "5": label = "Buffalo"; break;
-                                default:
-                                    System.out.println("❌ Invalid cheese option.");
-                                    continue;
-                            }
-                        }
-
-                        myStylePizza.addTopping(Topping.fromInput(label));
-                    } else {
-                        switch (cheeseInput) {
-                            case "1": cheese = "Mozzarella"; break;
-                            case "2": cheese = "Parmesan"; break;
-                            case "3": cheese = "Ricotta"; break;
-                            case "4": cheese = "Goat Cheese"; break;
-                            case "5": cheese = "Buffalo"; break;
-                            default:
-                                System.out.println("❌ Invalid cheese option.");
-                                continue;
-                        }
-
-                        myStylePizza.addTopping(Topping.fromInput(cheese));
-                        System.out.println("✅ Added cheese: " + cheese + order);
-                    }
-
-
+                    buildToppings(myStylePizza, Topping.ToppingCategory.CHEESE);
+                    System.out.println("Added CHEESE toppings:");
+                    displayToppingMenu(myStylePizza.getToppingsByCategory(Topping.ToppingCategory.CHEESE), Topping.ToppingCategory.CHEESE);
                     break;
 
                 // 🍽 SIDES
@@ -322,9 +348,15 @@ public class UserInterface {
                     String side = "";
 
                     switch (sideInput) {
-                        case "1": side = "Red Pepper"; break;
-                        case "2": side = "Parmesan"; break;
-                        case "0": side = ""; break;
+                        case "1":
+                            side = "Red Pepper";
+                            break;
+                        case "2":
+                            side = "Parmesan";
+                            break;
+                        case "0":
+                            side = "";
+                            break;
                         default:
                             System.out.println("❌ Invalid side option.");
                             continue;
@@ -337,7 +369,7 @@ public class UserInterface {
                     //save pizza
                     order.addToOrder(myStylePizza);
                     System.out.println("Adding to your order...");
-                    System.out.println("Added!" + order);
+                    System.out.println("✅ Added!");
                     running = false;
                     // 🔙 EXIT
                 case 0:
@@ -408,9 +440,15 @@ public class UserInterface {
                     String side = "";
 
                     switch (sideInput) {
-                        case "1": side = "Red Pepper"; break;
-                        case "2": side = "Parmesan"; break;
-                        case "0": side = ""; break;
+                        case "1":
+                            side = "Red Pepper";
+                            break;
+                        case "2":
+                            side = "Parmesan";
+                            break;
+                        case "0":
+                            side = "";
+                            break;
                         default:
                             System.out.println("❌ Invalid side option.");
                             continue;
@@ -422,7 +460,7 @@ public class UserInterface {
                     System.out.println("Adding to your order...");
                     System.out.println("Added!");
                     running = false;
-                // 🔙 EXIT
+                    // 🔙 EXIT
                 case 0:
                     System.out.println("Returning to main menu...");
                     running = false;
@@ -443,7 +481,7 @@ public class UserInterface {
             displayDrinksMenu();
             String choice = getUserInput("Choose a drink: ");
 
-            if("0".equals(choice)) {
+            if ("0".equals(choice)) {
                 System.out.println("🚫 Returning to main menu...");
                 running = false;
                 break;
@@ -465,17 +503,18 @@ public class UserInterface {
                     continue;
             }
 
-            if(drink != null) {
-                System.out.println("✅ Added " + drink.getSize() + " " + drink.getName() + " — Price: $" + drink.getPrice());
+            if (drink != null) {
+                System.out.println("✅ Added " + drink.getSize() + " " + drink.getName() + " — Price: $ " + drink.getPrice());
                 order.addToOrder(drink);
             }
 
-            String more = getUserInput("Do you want to add another drink? (y/n): ");
+            System.out.println("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒");
+            String more = getUserInput("\nDo you want to add another drink? (y/n): ");
             if (!more.equalsIgnoreCase("y")) {
                 running = false; // exit loop and return to main menu
             }
         }
-        System.out.println("🛒 Returning to main menu with your drinks added.");
+        System.out.println("🛒 Returning to main menu");
     }
 
     public void runBreadMenu() {
@@ -515,216 +554,85 @@ public class UserInterface {
                 order.addToOrder(bread);
             }
 
-            String more = getUserInput("Do you want to add another bread? (y/n):");
+            System.out.println("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒");
+            String more = getUserInput("\nDo you want to add another bread? (y/n):");
             if (!more.equalsIgnoreCase("y")) running = false;
 
         }
 
-        System.out.println("🛒 Returning to main menu with your breads added.");
+        System.out.println("🛒 Returning to main menu");
     }
 
-    // display
-    public static void displayMainMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "                   Main Menu                 " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🍕 Order");
-        System.out.println("  " + MAGENTA + "[0]" + RESET + " ❌ Cancel / Exit");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayOrderMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "               Add to Your Order             " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[P]" + RESET + " 🍕 Pizza");
-        System.out.println("  " + GREEN + "[D]" + RESET + " 🥤 Drinks");
-        System.out.println("  " + GREEN + "[B]" + RESET + " 🧄 Bread");
-        System.out.println("  " + MAGENTA + "[X]" + RESET + " 🔙 Go Back");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayPizzaMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "               Choose Your Pizza Type        " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[S]" + RESET + " ⭐ Signature Pizza");
-        System.out.println("  " + GREEN + "[V]" + RESET + " 🥦 Veggie Pizza");
-        System.out.println("  " + GREEN + "[M]" + RESET + " 🍳 Build My Own Pizza");
-        System.out.println("  " + MAGENTA + "[X]" + RESET + " 🔙 Go Back");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayBuildPizzaMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "             Customize Your Pizza            " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 📏 Size");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Crust Type");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🍅 Sauce");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🍖 Protein");
-        System.out.println("  " + GREEN + "[5]" + RESET + " 🥦 Toppings");
-        System.out.println("  " + GREEN + "[6]" + RESET + " 🧀 Cheese");
-        System.out.println("  " + GREEN + "[7]" + RESET + " 🍽️ Sides");
-        System.out.println("  " + GREEN + "[8]" + RESET + " ✅ Done");
-        System.out.println("  " + MAGENTA + "[0]" + RESET + " ❌ Go Back");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayCustomizePizzaMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "             Customize Your Pizza            " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 📏 Size");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Crust Type");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🍅 Sauce");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🍖 Toppings");
-        System.out.println("  " + GREEN + "[7]" + RESET + " 🍽️ Sides");
-        System.out.println("  " + GREEN + "[8]" + RESET + " ✅ Done");
-        System.out.println("  " + MAGENTA + "[0]" + RESET + " ❌ Go Back");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-
-
-    public static void displayPizzaSizeMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "              Choose Your Pizza Size         " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[S]" + RESET + " 🍕 Small (8\")");
-        System.out.println("  " + GREEN + "[M]" + RESET + " 🍕🍕 Medium (12\")");
-        System.out.println("  " + GREEN + "[L]" + RESET + " 🍕🍕🍕 Large (16\")");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayPizzaCrustMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "              Choose Your Pizza Crust        " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🍞 Thin");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Regular");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🍞 Thick");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🥦 Cauliflower");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayPizzaSauceMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "                 Choose Your Sauce           " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🍅 Marinara");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🧄 Alfredo");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🌿 Pesto");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🍖 BBQ");
-        System.out.println("  " + GREEN + "[5]" + RESET + " 🌶️ Buffalo");
-        System.out.println("  " + GREEN + "[6]" + RESET + " 🫒 Olive Oil");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayPremiumToppingMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "               Choose Your Protein           " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🍕 Pepperoni");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🌭 Sausage");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🍖 Ham");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🥓 Bacon");
-        System.out.println("  " + GREEN + "[5]" + RESET + " 🍗 Chicken");
-        System.out.println("  " + GREEN + "[6]" + RESET + " 🧆 Meatball");
-        System.out.println("  " + GREEN + "[0]" + RESET + " 🚫 No protein");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayToppingMenu(List<Topping> toppings, Topping.ToppingCategory category) {
-
-        System.out.println("╔════════════════════════════════════════════╗");
-        System.out.println("          Choose Your " + category.name());
-        System.out.println("╠════════════════════════════════════════════╣");
-        for (int i = 0; i < toppings.size(); i++) {
-            System.out.printf("  [%d] %s%n", i + 1, toppings.get(i).getLabel());
+    private void displayCurrentOrder(Order order) {
+        List<OrderItem> items = order.getOrderItems();
+        if (items.isEmpty()) {
+            System.out.println("Your order is empty.");
+            return;
         }
-        System.out.println("  [0] No selection");
-        System.out.println("╚════════════════════════════════════════════╝");
+
+        System.out.println("╔══════════════════════════════════════════════════╗");
+        System.out.println("║                CURRENT ORDER ITEMS               ║");
+        System.out.println("╠════╦══════════════════════╦══════════╦═══════════╣");
+        System.out.println("║ #  ║ Item                 ║ Size     ║ Price     ║");
+        System.out.println("╠════╬══════════════════════╬══════════╬═══════════╣");
+
+        int index = 1;
+
+        for (OrderItem item : items) {
+
+            String size = (item instanceof Sizable s) ? s.getSize().toString() : "-";
+            ;
+
+            System.out.printf(
+                    "║ %-3d║ %-20s ║ %-8s ║ $%8.2f ║%n",
+                    index++,
+                    item.getName(),
+                    size,
+                    item.getPrice()
+            );
+        }
+
+        System.out.println("╠════╩══════════════════════╩══════════╬═══════════╣");
+
+        // FINAL TOTAL ROW — always last
+        System.out.printf(
+                "║ %-36s ║ $%8.2f ║%n",
+                "SUBTOTAL:",
+                order.getSubtotal()
+        );
+
+        System.out.println("╚══════════════════════════════════════════════════╝");
     }
 
-    public static void displayRegularToppingMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "            Choose Your Regular Toppings     " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🧅 Onions");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍄 Mushrooms");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🌶️ Bell Peppers");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🫒 Olives");
-        System.out.println("  " + GREEN + "[5]" + RESET + " 🍅 Tomatoes");
-        System.out.println("  " + GREEN + "[6]" + RESET + " 🌿 Spinach");
-        System.out.println("  " + GREEN + "[7]" + RESET + " 🌿 Basil");
-        System.out.println("  " + GREEN + "[8]" + RESET + " 🍍 Pineapple");
-        System.out.println("  " + GREEN + "[9]" + RESET + " 🐟 Anchovies");
-        System.out.println("  " + GREEN + "[0]" + RESET + " 🚫 No toppings");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
+    private void displayPizza(Pizza pizza) {
+        System.out.println("Pizza Details:");
+        System.out.println("--------------");
 
-    public static void displayCheeseToppingMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "                 Choose Your Cheese          " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🧀 Mozzarella");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🧂 Parmesan");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🍶 Ricotta");
-        System.out.println("  " + GREEN + "[4]" + RESET + " 🐐 Goat Cheese");
-        System.out.println("  " + GREEN + "[5]" + RESET + " 🐃 Buffalo");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
+        System.out.println("Name       : " + pizza.getName());
+        System.out.println("Size       : " + (pizza.getSize() != null ? pizza.getSize() : "-"));
+        System.out.println("Crust Type : " + (pizza.getCrustType() != null ? pizza.getCrustType() : "-"));
+        System.out.println("Sauce Type : " + (pizza.getSauceType() != null ? pizza.getSauceType() : "-"));
 
-    public static void displaySidesMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "                 Choose Your Sides           " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🌶️ Red Pepper");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🧂 Parmesan");
-        System.out.println("  " + GREEN + "[0]" + RESET + " 🚫 No Sides");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
+        // Display toppings grouped by category
+        for (Topping.ToppingCategory category : Topping.ToppingCategory.values()) {
+            List<Topping> toppings = pizza.getToppingsByCategory(category);
+            if (!toppings.isEmpty()) {
+                String toppingList = toppings.stream()
+                        .map(Topping::getLabel)
+                        .collect(Collectors.joining(", "));
+                System.out.println(category.name() + " : " + toppingList);
+            }
+        }
 
-    public static void displayDrinksMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "                Choose Your Drinks           " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🥤 Smoothie");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍊 Orange Juice");
-        System.out.println("  " + GREEN + "[0]" + RESET + " 🚫 No Drink");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
+        // Display sides if any
+        if (!pizza.getSides().isEmpty()) {
+            String sidesList = pizza.getSides().stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+            System.out.println("Sides      : " + sidesList);
+        }
 
-    public static void displayBreadMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "               Choose your bread side        " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[1]" + RESET + " 🥖 Garlic Knots");
-        System.out.println("  " + GREEN + "[2]" + RESET + " 🍞 Bread sticks");
-        System.out.println("  " + GREEN + "[3]" + RESET + " 🧄 Loaded tots");
-        System.out.println("  " + MAGENTA + "[0]" + RESET + " 🚫 No Bread / Go Back");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displaySizeMenu() {
-        System.out.println(BOLD + CYAN + "╔════════════════════════════════════════════╗" + RESET);
-        System.out.println(CYAN + "                Choose a size               " + RESET);
-        System.out.println(CYAN + "╠════════════════════════════════════════════╣" + RESET);
-        System.out.println("  " + GREEN + "[S]" + RESET + " Small");
-        System.out.println("  " + GREEN + "[M]" + RESET + " Medium");
-        System.out.println("  " + GREEN + "[L]" + RESET + " Large");
-        System.out.println(CYAN + "╚════════════════════════════════════════════╝" + RESET);
-    }
-
-    public static void displayReceipt() {
-        System.out.println("Receipt with menu items and total");
-    }
-
-    // helpers
-    public static String getUserInput(String prompt) {
-        System.out.print(prompt + " ");
-        return scanner.nextLine().trim().toUpperCase();
+        System.out.printf("Total Price: $%.2f%n", pizza.getPrice());
     }
 
     private Size askForSize(Runnable displaySizeMenu) {
@@ -753,9 +661,7 @@ public class UserInterface {
         return SauceType.fromInput(sauceChoice);
     }
 
-
-
-    private List<String>  getValidInput (String input) {
+    private List<String> getValidInput(String input) {
         return input.chars()                     // stream of int (Unicode code points)
                 .filter(Character::isDigit)                      // keep only digits
                 .mapToObj(c -> String.valueOf((char) c))         // convert int to String
@@ -787,6 +693,7 @@ public class UserInterface {
         );
 
     }
+
     public Pizza getVeggiePizza() {
         List<Topping> veggieToppings = new ArrayList<>();
 
@@ -811,7 +718,43 @@ public class UserInterface {
 
     }
 
-    public void customizeToppings(Pizza pizza,Topping.ToppingCategory category) {
+    public void buildToppings(Pizza pizza, Topping.ToppingCategory category) {
+        // Get all toppings in this category
+        List<Topping> available = Arrays.stream(Topping.values())
+                .filter(t -> t.getCategory() == category)
+                .toList();
+
+        displayToppingMenu(available, category);
+
+        // Get user input
+        String addInput = getUserInput("Enter your choice(s) (e.g., 1 2 4): ");
+        List<String> addedToppingCodes = getValidInput(addInput);
+
+        if (addedToppingCodes.isEmpty()) {
+            System.out.println("❌ No valid selection.");
+            return;
+        }
+
+        // Process input
+        for (String code : addedToppingCodes) {
+            try {
+                int index = Integer.parseInt(code) - 1; // convert to 0-based
+                if (index >= 0 && index < available.size()) {
+                    Topping topping = available.get(index);
+                    pizza.addTopping(topping);
+                    System.out.println("✅ Added: " + topping.getLabel());
+                } else if (index == -1) {
+                    System.out.println("🚫 Skipped " + category.name());
+                } else {
+                    System.out.println("❌ Invalid choice: " + code);
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Invalid input: " + code);
+            }
+        }
+    }
+
+    public void customizeToppings(Pizza pizza, Topping.ToppingCategory category) {
         // Get all toppings in this category
         List<Topping> available = Arrays.stream(Topping.values())
                 .filter(t -> t.getCategory() == category)
@@ -830,8 +773,8 @@ public class UserInterface {
         for (String choice : choices) {
             try {
                 int index = Integer.parseInt(choice) - 1; // convert to 0-based
-                if (index >= 0 && index < available.size()) {
-                    Topping topping = available.get(index);
+                if (index >= 0 && index < currentToppings.size()) {
+                    Topping topping = currentToppings.get(index);
                     pizza.removeTopping(topping);
                     System.out.println("✅ Removed: " + topping.getLabel());
                 } else if (index == -1) {
