@@ -2,42 +2,48 @@ package com.miaraylight.pizzamore.models;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+import java.util.UUID;
 
 public class Order {
-    private int orderNumber;
-    private List<OrderItem> orderItems ;
-    private double totalPrice;
+    private final String orderId;
+    private List<OrderItem> orderItems;
+    private double discount = 0.0;  // flat discount or percent later
 
     public Order() {
-        this.orderNumber = new Random().nextInt(100000) + 1;
+        this.orderId = UUID.randomUUID().toString().substring(0, 8); // short ID
         this.orderItems = new ArrayList<>();
-        this.totalPrice = getTotalPrice();
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void applyDiscount(double amount) {
+        this.discount = amount;
+    }
+
+    public double getSubtotal() {
+        return orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
+    }
+
+    public double getTax() {
+
+        double TAX_RATE = 0.02;// 2% tax in my dreams
+        return (getSubtotal() - discount) * TAX_RATE;
     }
 
     public double getTotalPrice() {
-        return orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
+        return getSubtotal() - discount + getTax();
     }
 
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    public OrderItem addToOrder(OrderItem orderItem) {
-        orderItems.add(orderItem);
-        return orderItem;
-    }
-
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderNumber=" + orderNumber +
-                ", orderItems=" + orderItems +
-                ", totalPrice=" + totalPrice +
-                '}';
+    public OrderItem addToOrder(OrderItem item) {
+        orderItems.add(item);
+        return item;
     }
 }
+

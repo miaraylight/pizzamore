@@ -102,7 +102,20 @@ public class UserInterface {
                     break;
                 case "V":
                     System.out.println("Veggie Pizza selected.");
-                    order.addToOrder(getVeggiePizza());
+                    Pizza veggie = getVeggiePizza();
+                    System.out.println(getVeggiePizza());
+                    System.out.println("Would you like to customize it? (y/n)");
+                    String customizeVeggie = scanner.nextLine().trim();
+                    if (customizeVeggie.equalsIgnoreCase("y")) {
+                        Pizza customizedVeggie = runCustomizeMenu(veggie);
+                        order.addToOrder(customizedVeggie);
+                    } else if (customizeVeggie.equalsIgnoreCase("n")) {
+                        order.addToOrder(veggie);
+                    }else {
+                        System.out.println("Invalid input. Try again");
+                    }
+                    System.out.println("order");
+                    System.out.println(order);
                     break;
                 case "M":
                     System.out.println("Let's build it!");
