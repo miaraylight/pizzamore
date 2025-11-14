@@ -661,7 +661,7 @@ public class UserInterface {
         return SauceType.fromInput(sauceChoice);
     }
 
-    private List<String> getValidInput(String input) {
+    public List<String> getValidInput(String input) {
         return input.chars()                     // stream of int (Unicode code points)
                 .filter(Character::isDigit)                      // keep only digits
                 .mapToObj(c -> String.valueOf((char) c))         // convert int to String

@@ -84,7 +84,7 @@ public class Pizza extends OrderItem implements Sizable {
         };
     }
 
-    private double getToppingsPrice() {
+    public double getToppingsPrice() {
         if (toppings.isEmpty()) return 0.0;
 
         List<Topping> premium = toppings.stream().filter(topping -> topping.getCategory().equals(Topping.ToppingCategory.PREMIUM)).toList();
