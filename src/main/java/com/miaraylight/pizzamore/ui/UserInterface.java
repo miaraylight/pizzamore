@@ -162,6 +162,7 @@ public class UserInterface {
     }
 
     public void display() {
+        displayLogo();
         int input;
         do {
             displayMainMenu();
@@ -176,7 +177,6 @@ public class UserInterface {
 
             switch (input) {
                 case 1:
-                    System.out.println("create a function with spinning logo as a loader");
                     initOrder();
                     runOrderMenu();
                     break;
@@ -819,4 +819,39 @@ public class UserInterface {
             }
         }
     }
+
+    public void displayLogo() {
+        String welcome = """
+                 __       __)                            \s
+                (, )  |  /     /)                        \s
+                   | /| /  _  // _  ______    _    _/_ ___
+                   |/ |/ _(/_(/_(__(_) // (__(/_   (__(_)\s
+                   /  |                                  \s
+                """;
+        String logo = """
+                █████▄ ▄▄ ▄▄▄▄▄ ▄▄▄▄▄ ▄████▄ ▄▄   ▄▄  ▄▄▄  ▄▄▄▄  ▄▄▄▄▄\s
+                ██▄▄█▀ ██   ▄█▀   ▄█▀ ██▄▄██ ██▀▄▀██ ██▀██ ██▄█▄ ██▄▄ \s
+                ██     ██ ▄██▄▄ ▄██▄▄ ██  ██ ██   ██ ▀███▀ ██ ██ ██▄▄▄\s
+                                                                      \s
+                                                                      \s
+                                                                      \s
+                """;
+
+        int colorIndex = 0;
+        System.out.println(welcome);
+
+        try {
+            for (char ch : logo.toCharArray()) {
+                System.out.print(RAINBOW_COLORS[colorIndex % RAINBOW_COLORS.length] + ch);
+                Thread.sleep(1);
+                colorIndex++;
+            }
+            System.out.println(AnsiColors.RESET);
+        } catch (InterruptedException e) {
+            System.err.println("Error during logo animation:" + e.getMessage());
+        }
+    }
+
+
+
 }
