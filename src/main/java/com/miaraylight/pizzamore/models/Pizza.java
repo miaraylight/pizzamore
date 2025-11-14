@@ -66,6 +66,18 @@ public class Pizza extends OrderItem implements Sizable{
         toppings.add(topping);
     }
 
+    public void removeTopping(Topping topping) {
+        toppings.remove(topping); // removes first occurrence
+    }
+
+    public List<Topping> getToppingsByCategory (Topping.ToppingCategory category) {
+        return toppings.stream().filter(topping -> topping.getCategory().equals(category)).toList();
+    }
+
+    public List<Topping> getToppings() {
+        return toppings;
+    }
+
 
     private double getCrustPrice() {
         return switch (getSize()) {
