@@ -250,8 +250,10 @@ public class UserInterface {
                     if (customize.equalsIgnoreCase("y")) {
                         Pizza customizedSignature = runCustomizeMenu(signature);
                         order.addToOrder(customizedSignature);
+                        System.out.println("✅ Added " + customizedSignature.getName() + " — Price: $" + customizedSignature.getPrice());
                     } else if (customize.equalsIgnoreCase("n")) {
                         order.addToOrder(signature);
+                        System.out.println("✅ Added " + signature.getName() + " — Price: $" + signature.getPrice());
                     } else {
                         System.out.println("Invalid input. Try again");
                     }
@@ -259,7 +261,6 @@ public class UserInterface {
                 case "V":
                     System.out.println("Veggie Pizza selected.");
                     Pizza veggie = getVeggiePizza();
-                    System.out.println(getVeggiePizza());
 
                     System.out.println("▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒");
                     System.out.println("Would you like to customize it? (y/n)");
@@ -267,8 +268,10 @@ public class UserInterface {
                     if (customizeVeggie.equalsIgnoreCase("y")) {
                         Pizza customizedVeggie = runCustomizeMenu(veggie);
                         order.addToOrder(customizedVeggie);
+                        System.out.println("✅ Added " + customizedVeggie.getName() + " — Price: $" + customizedVeggie.getPrice());
                     } else if (customizeVeggie.equalsIgnoreCase("n")) {
                         order.addToOrder(veggie);
+                        System.out.println("✅ Added " + veggie.getName() + " — Price: $" + veggie.getPrice());
                     } else {
                         System.out.println("Invalid input. Try again");
                     }
@@ -387,6 +390,7 @@ public class UserInterface {
         boolean running = true;
 
         while (running) {
+            displayPizza(pizza);
             displayBuildPizzaMenu();
             System.out.print("What would you like to customize? ");
             int input = scanner.nextInt();
