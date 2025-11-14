@@ -1,23 +1,49 @@
 package com.miaraylight.pizzamore.models;
 
 public enum SauceType {
-    MARINARA("Marinara"),
-    ALFREDO("Alfredo"),
-    PESTO("Pesto"),
-    BBQ("BBQ"),
-    BUFFALO("Buffalo"),
-    OLIVE_OIL("Olive Oil");
+    MARINARA("1", "Marinara"),
+    ALFREDO("2", "Alfredo"),
+    PESTO("3", "Pesto"),
+    BBQ("4", "BBQ"),
+    BUFFALO("5", "Buffalo"),
+    OLIVE_OIL("6", "Olive Oil");
 
+    private final String code;
     private final String label;
 
-    SauceType(String label) {
+    SauceType(String code, String label) {
+        this.code = code;
         this.label = label;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public static SauceType fromInput(String input) {
+        if (input == null) return MARINARA;
+        input = input.trim().toUpperCase();
+
+        return switch (input) {
+            case "1", "MARINARA" -> MARINARA;
+            case "2", "ALFREDO" -> ALFREDO;
+            case "3", "PESTO" -> PESTO;
+            case "4", "BBQ" -> BBQ;
+            case "5", "BUFFALO" -> BUFFALO;
+            case "6", "OLIVE OIL", "OLIVEOIL", "OLIVE_OIL" -> OLIVE_OIL;
+            default -> MARINARA; // fallback
+        };
     }
 
     @Override
     public String toString() {
         return "SauceType{" +
-                "label='" + label + '\'' +
+                "code='" + code + '\'' +
+                ", label='" + label + '\'' +
                 '}';
     }
 }

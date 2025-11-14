@@ -2,8 +2,10 @@ package com.miaraylight.pizzamore.ui;
 
 import com.miaraylight.pizzamore.models.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import static com.miaraylight.pizzamore.ui.AnsiColors.*;
 
@@ -88,8 +90,8 @@ public class UserInterface {
                     System.out.println("Would you like to customize it? (y/n)");
                     String customize = scanner.nextLine().trim().toUpperCase();
                     if (customize.equalsIgnoreCase("y")) {
-                        Pizza customizedSignature = runCustomizeMenu(signature);
-                        order.addToOrder(customizedSignature);
+//                        Pizza customizedSignature = runCustomizeMenu(signature);
+//                        order.addToOrder(customizedSignature);
                     }
                     order.addToOrder(signature);
                     System.out.println("order");
@@ -115,6 +117,7 @@ public class UserInterface {
 
     private void runBuildMenu() {
         boolean running = true;
+        Pizza myStylePizza = new Pizza("My style pizza", Size.MEDIUM, CrustType.REGULAR, SauceType.MARINARA, null, null); // default
 
         while (running) {
             displayCustomizePizzaMenu();
@@ -122,81 +125,77 @@ public class UserInterface {
             int input = scanner.nextInt();
             scanner.nextLine();
 
-            Pizza pizza = new Pizza("My style pizza");
+
 
             switch (input) {
 
                 // 🍕 PIZZA SIZE
                 case 1:
-                    pizza.setSize(askForSize(UserInterface::displayPizzaSizeMenu));
+                    myStylePizza.setSize(askForSize(UserInterface::displayPizzaSizeMenu));
+                    System.out.println("✅ Selected size: " + myStylePizza.getSize());
                     break;
 
                 // 🫓 CRUST
                 case 2:
-                    displayPizzaCrustMenu();
-                    String crust = getUserInput("Choose crust type:");
-
-                    switch (crust) {
-                        case "1": pizza.setCrustType(CrustType.THIN); break;
-                        case "2": pizza.setCrustType(CrustType.REGULAR); break;
-                        case "3": pizza.setCrustType(CrustType.THICK); break;
-                        case "4": pizza.setCrustType(CrustType.CAULIFLOWER); break;
-                        default:
-                            System.out.println("❌ Invalid crust option.");
-                            continue;
-                    }
-                    System.out.println("✅ Selected crust: " + pizza.getCrustType());
+                    myStylePizza.setCrustType(askForCrustType(UserInterface::displayPizzaCrustMenu));
+                    System.out.println("✅ Selected crust: " + myStylePizza.getCrustType());
                     break;
 
                 // 🍅 SAUCE
                 case 3:
                     displayPizzaSauceMenu();
-                    String sauce = getUserInput("Choose sauce:");
-
-                    switch (sauce) {
-                        case "1": pizza.setSauceType(SauceType.MARINARA); break;
-                        case "2": pizza.setSauceType(SauceType.ALFREDO); break;
-                        case "3": pizza.setSauceType(SauceType.PESTO); break;
-                        case "4": pizza.setSauceType(SauceType.BBQ); break;
-                        case "5": pizza.setSauceType(SauceType.BUFFALO); break;
-                        case "6": pizza.setSauceType(SauceType.OLIVE_OIL); break;
-                        default:
-                            System.out.println("❌ Invalid sauce option.");
-                            continue;
-                    }
-                    System.out.println("✅ Selected sauce: " + pizza.getSauceType());
+                    myStylePizza.setSauceType(askForSauceType(UserInterface::displayPizzaSauceMenu));
+                    System.out.println("✅ Selected sauce: " + myStylePizza.getSauceType());
                     break;
 
                 // 🍖 PREMIUM TOPPINGS
                 case 4:
                     displayPremiumToppingMenu();
-                    String[] premiumToppingsOptions = {
-                            "Pepperoni", // 1
-                            "Sausage",   // 2
-                            "Ham",       // 3
-                            "Bacon",     // 4
-                            "Chicken",   // 5
-                            "Meatball"   // 6
-                    };
-                    System.out.println("You can choose single or multiple option (each extra protein for .30");
+                    System.out.println("You can choose single or multiple option");
                     String premium = getUserInput("Choose protein (1–6)");
-                    //implement logic handling multiple input
-
                     String premiumTopping = "";
 
-                    switch (premium) {
-                        case "1": premiumTopping = "Pepperoni"; break;
-                        case "2": premiumTopping = "Sausage"; break;
-                        case "3": premiumTopping = "Ham"; break;
-                        case "4": premiumTopping = "Bacon"; break;
-                        case "5": premiumTopping = "Chicken"; break;
-                        case "6": premiumTopping = "Meatball"; break;
-                        case "0": premiumTopping = ""; break;
-                        default:
-                            System.out.println("❌ Invalid protein option.");
-                            continue;
+                    if (premium.length() > 1) {
+                        List<String> choices = getValidInput(premium);
+                        System.out.println(choices);
+
+                        for (String choice : choices) {
+                            String label = "";
+                            switch (choice) {
+                                case "1": label = "Pepperoni"; break;
+                                case "2": label = "Sausage"; break;
+                                case "3": label = "Ham"; break;
+                                case "4": label = "Bacon"; break;
+                                case "5": label = "Chicken"; break;
+                                case "6": label = "Meatball"; break;
+                                case "0": break;
+                                default:
+                                    System.out.println("❌ Invalid protein option.");
+                                    continue;
+                            }
+                            myStylePizza.addTopping(Topping.fromInput(label));
+                        }
+                    } else {
+                        switch (premium) {
+                            case "1": premiumTopping = "Pepperoni"; break;
+                            case "2": premiumTopping = "Sausage"; break;
+                            case "3": premiumTopping = "Ham"; break;
+                            case "4": premiumTopping = "Bacon"; break;
+                            case "5": premiumTopping = "Chicken"; break;
+                            case "6": premiumTopping = "Meatball"; break;
+                            case "0": premiumTopping = ""; break;
+                            default:
+                                System.out.println("❌ Invalid protein option.");
+                                continue;
+                        }
+
+                        myStylePizza.addTopping(Topping.fromInput(premiumTopping));
+                        System.out.println("✅ Added premium topping: " + premiumTopping);
                     }
-                    System.out.println("✅ Added premium topping: " + premiumTopping);
+
+
+
+
                     break;
 
                 // 🥦 REGULAR TOPPINGS
@@ -207,22 +206,53 @@ public class UserInterface {
                     //implement logic handling multiple input
                     String regularTopping = "";
 
-                    switch (regular) {
-                        case "1": regularTopping = "Onions"; break;
-                        case "2": regularTopping = "Mushrooms"; break;
-                        case "3": regularTopping = "Bell Peppers"; break;
-                        case "4": regularTopping = "Olives"; break;
-                        case "5": regularTopping = "Tomatoes"; break;
-                        case "6": regularTopping = "Spinach"; break;
-                        case "7": regularTopping = "Basil"; break;
-                        case "8": regularTopping = "Pineapple"; break;
-                        case "9": regularTopping = "Anchovies"; break;
-                        case "0": regularTopping = ""; break;
-                        default:
-                            System.out.println("❌ Invalid topping option.");
-                            continue;
+                    if (regular.length() > 1) {
+                        List<String> choices = getValidInput(regular);
+
+                        for (String choice : choices) {
+                            String label = "";
+
+                            switch (regular) {
+                                case "1": label = "Onions"; break;
+                                case "2": label = "Mushrooms"; break;
+                                case "3": label = "Bell Peppers"; break;
+                                case "4": label = "Olives"; break;
+                                case "5": label = "Tomatoes"; break;
+                                case "6": label = "Spinach"; break;
+                                case "7": label = "Basil"; break;
+                                case "8": label = "Pineapple"; break;
+                                case "9": label = "Anchovies"; break;
+                                case "0": label = ""; break;
+                                default:
+                                    System.out.println("❌ Invalid topping option.");
+                                    continue;
+                            }
+
+                            myStylePizza.addTopping(Topping.fromInput(label));
+                        }
+                    } else {
+                        switch (regular) {
+                            case "1": regularTopping = "Onions"; break;
+                            case "2": regularTopping = "Mushrooms"; break;
+                            case "3": regularTopping = "Bell Peppers"; break;
+                            case "4": regularTopping = "Olives"; break;
+                            case "5": regularTopping = "Tomatoes"; break;
+                            case "6": regularTopping = "Spinach"; break;
+                            case "7": regularTopping = "Basil"; break;
+                            case "8": regularTopping = "Pineapple"; break;
+                            case "9": regularTopping = "Anchovies"; break;
+                            case "0": regularTopping = ""; break;
+                            default:
+                                System.out.println("❌ Invalid topping option.");
+                                continue;
+                        }
+
+                        myStylePizza.addTopping(Topping.fromInput(regularTopping));
+
+                        System.out.println(myStylePizza );
                     }
-                    System.out.println(regularTopping.isEmpty() ? "No toppings" : "✅ Added regular topping: " + regularTopping );
+
+
                     break;
 
                 // 🧀 CHEESE
@@ -232,17 +262,41 @@ public class UserInterface {
                     String cheeseInput = getUserInput("Choose cheese (1–5):");
                     String cheese = "";
 
-                    switch (cheeseInput) {
-                        case "1": cheese = "Mozzarella"; break;
-                        case "2": cheese = "Parmesan"; break;
-                        case "3": cheese = "Ricotta"; break;
-                        case "4": cheese = "Goat Cheese"; break;
-                        case "5": cheese = "Buffalo"; break;
-                        default:
-                            System.out.println("❌ Invalid cheese option.");
-                            continue;
+                    if (cheeseInput.length() > 1) {
+                        List<String> choices = getValidInput(cheeseInput);
+                        String label = "";
+
+                        for (String choice : choices) {
+                            switch (cheeseInput) {
+                                case "1": label = "Mozzarella"; break;
+                                case "2": label = "Parmesan"; break;
+                                case "3": label = "Ricotta"; break;
+                                case "4": label = "Goat Cheese"; break;
+                                case "5": label = "Buffalo"; break;
+                                default:
+                                    System.out.println("❌ Invalid cheese option.");
+                                    continue;
+                            }
+                        }
+
+                        myStylePizza.addTopping(Topping.fromInput(label));
+                    } else {
+                        switch (cheeseInput) {
+                            case "1": cheese = "Mozzarella"; break;
+                            case "2": cheese = "Parmesan"; break;
+                            case "3": cheese = "Ricotta"; break;
+                            case "4": cheese = "Goat Cheese"; break;
+                            case "5": cheese = "Buffalo"; break;
+                            default:
+                                System.out.println("❌ Invalid cheese option.");
+                                continue;
+                        }
+
+                        myStylePizza.addTopping(Topping.fromInput(cheese));
+                        System.out.println("✅ Added cheese: " + cheese + order);
                     }
-                    System.out.println("✅ Added cheese: " + cheese);
+
+
                     break;
 
                 // 🍽 SIDES
@@ -259,12 +313,15 @@ public class UserInterface {
                             System.out.println("❌ Invalid side option.");
                             continue;
                     }
+
+                    myStylePizza.addSide(side);
                     System.out.println("✅ Added side: " + side);
                     break;
                 case 8:
                     //save pizza
+                    order.addToOrder(myStylePizza);
                     System.out.println("Adding to your order...");
-                    System.out.println("Added!");
+                    System.out.println("Added!" + order);
                     running = false;
                     // 🔙 EXIT
                 case 0:
@@ -278,167 +335,148 @@ public class UserInterface {
         }
     }
 
-    private Pizza runCustomizeMenu(Pizza pizza) {
-        boolean running = true;
-
-        while (running) {
-            displayCustomizePizzaMenu();
-            System.out.print("What would you like to customize? ");
-            int input = scanner.nextInt();
-            scanner.nextLine();
-
-
-            switch (input) {
-
-                // 🍕 PIZZA SIZE
-                case 1:
-                    pizza.setSize(askForSize(UserInterface::displayPizzaSizeMenu));
-                    break;
-
-                // 🫓 CRUST
-                case 2:
-                    displayPizzaCrustMenu();
-                    System.out.println("Original crust type is " + pizza.getCrustType());
-                    String crust = getUserInput("Choose crust type:");
-
-                    switch (crust) {
-                        case "1": pizza.setCrustType(CrustType.THIN); break;
-                        case "2": pizza.setCrustType(CrustType.REGULAR); break;
-                        case "3": pizza.setCrustType(CrustType.THICK); break;
-                        case "4": pizza.setCrustType(CrustType.CAULIFLOWER); break;
-                        default:
-                            System.out.println("❌ Invalid crust option.");
-                            continue;
-                    }
-                    System.out.println("✅ Selected crust: " + pizza.getCrustType());
-                    break;
-
-                // 🍅 SAUCE
-                case 3:
-                    displayPizzaSauceMenu();
-                    System.out.println("Original sauce type is " + pizza.getSauceType());
-                    String sauce = getUserInput("Choose sauce:");
-
-                    switch (sauce) {
-                        case "1": pizza.setSauceType(SauceType.MARINARA); break;
-                        case "2": pizza.setSauceType(SauceType.ALFREDO); break;
-                        case "3": pizza.setSauceType(SauceType.PESTO); break;
-                        case "4": pizza.setSauceType(SauceType.BBQ); break;
-                        case "5": pizza.setSauceType(SauceType.BUFFALO); break;
-                        case "6": pizza.setSauceType(SauceType.OLIVE_OIL); break;
-                        default:
-                            System.out.println("❌ Invalid sauce option.");
-                            continue;
-                    }
-                    System.out.println("✅ Selected sauce: " + pizza.getSauceType());
-                    break;
-
-                // 🍖 PREMIUM TOPPINGS
-                case 4:
-                    displayPremiumToppingMenu();
-                    System.out.println("Original protein toppings" + pizza.getCrustType());
-                    //System.out.println("Original protein toppings" + pizza.getToppings(ToppingType.Premium));
-                    System.out.println("You can choose single or multiple option (each extra protein for .30");
-                    String premium = getUserInput("Choose protein (1–6)");
-                    //implement logic handling multiple input
-
-                    String premiumTopping = "";
-
-                    switch (premium) {
-                        case "1": premiumTopping = "Pepperoni"; break;
-                        case "2": premiumTopping = "Sausage"; break;
-                        case "3": premiumTopping = "Ham"; break;
-                        case "4": premiumTopping = "Bacon"; break;
-                        case "5": premiumTopping = "Chicken"; break;
-                        case "6": premiumTopping = "Meatball"; break;
-                        case "0": premiumTopping = ""; break;
-                        default:
-                            System.out.println("❌ Invalid protein option.");
-                            continue;
-                    }
-                    System.out.println("✅ Added premium topping: " + premiumTopping);
-                    break;
-
-                // 🥦 REGULAR TOPPINGS
-                case 5:
-                    displayRegularToppingMenu();
-                    System.out.println("You can choose single or multiple option");
-                    String regular = getUserInput("Choose topping (1–9):");
-                    //implement logic handling multiple input
-                    String regularTopping = "";
-
-                    switch (regular) {
-                        case "1": regularTopping = "Onions"; break;
-                        case "2": regularTopping = "Mushrooms"; break;
-                        case "3": regularTopping = "Bell Peppers"; break;
-                        case "4": regularTopping = "Olives"; break;
-                        case "5": regularTopping = "Tomatoes"; break;
-                        case "6": regularTopping = "Spinach"; break;
-                        case "7": regularTopping = "Basil"; break;
-                        case "8": regularTopping = "Pineapple"; break;
-                        case "9": regularTopping = "Anchovies"; break;
-                        case "0": regularTopping = ""; break;
-                        default:
-                            System.out.println("❌ Invalid topping option.");
-                            continue;
-                    }
-                    System.out.println(regularTopping.isEmpty() ? "No toppings" : "✅ Added regular topping: " + regularTopping );
-                    break;
-
-                // 🧀 CHEESE
-                case 6:
-                    displayCheeseToppingMenu();
-                    System.out.println("You can choose single or multiple option");
-                    String cheeseInput = getUserInput("Choose cheese (1–5):");
-                    String cheese = "";
-
-                    switch (cheeseInput) {
-                        case "1": cheese = "Mozzarella"; break;
-                        case "2": cheese = "Parmesan"; break;
-                        case "3": cheese = "Ricotta"; break;
-                        case "4": cheese = "Goat Cheese"; break;
-                        case "5": cheese = "Buffalo"; break;
-                        default:
-                            System.out.println("❌ Invalid cheese option.");
-                            continue;
-                    }
-                    System.out.println("✅ Added cheese: " + cheese);
-                    break;
-
-                // 🍽 SIDES
-                case 7:
-                    displaySidesMenu();
-                    String sideInput = getUserInput("Choose side (1–2):");
-                    String side = "";
-
-                    switch (sideInput) {
-                        case "1": side = "Red Pepper"; break;
-                        case "2": side = "Parmesan"; break;
-                        case "0": side = ""; break;
-                        default:
-                            System.out.println("❌ Invalid side option.");
-                            continue;
-                    }
-                    System.out.println("✅ Added side: " + side);
-                    break;
-                case 8:
-                    //save pizza
-                    System.out.println("Adding to your order...");
-                    System.out.println("Added!");
-                    running = false;
-                // 🔙 EXIT
-                case 0:
-                    System.out.println("Returning to main menu...");
-                    running = false;
-                    break;
-
-                default:
-                    System.out.println("❌ Invalid choice. Please try again.");
-            }
-        }
-
-        return pizza;
-    }
+//    private Pizza runCustomizeMenu(Pizza pizza) {
+//        boolean running = true;
+//
+//        while (running) {
+//            displayCustomizePizzaMenu();
+//            System.out.print("What would you like to customize? ");
+//            int input = scanner.nextInt();
+//            scanner.nextLine();
+//
+//
+//            switch (input) {
+//
+//                // 🍕 PIZZA SIZE
+//                case 1:
+//                    pizza.setSize(askForSize(UserInterface::displayPizzaSizeMenu));
+//                    break;
+//
+//                // 🫓 CRUST
+//                case 2:
+//                    displayPizzaCrustMenu();
+//                    System.out.println("Original crust type is " + pizza.getCrustType());
+//                    String crust = getUserInput("Choose crust type:");
+//
+//                    switch (crust) {
+//                        case "1": pizza.setCrustType(CrustType.THIN); break;
+//                        case "2": pizza.setCrustType(CrustType.REGULAR); break;
+//                        case "3": pizza.setCrustType(CrustType.THICK); break;
+//                        case "4": pizza.setCrustType(CrustType.CAULIFLOWER); break;
+//                        default:
+//                            System.out.println("❌ Invalid crust option.");
+//                            continue;
+//                    }
+//                    System.out.println("✅ Selected crust: " + pizza.getCrustType());
+//                    break;
+//
+//                // 🍅 SAUCE
+//                case 3:
+//                    displayPizzaSauceMenu();
+//                    System.out.println("Original sauce type is " + pizza.getSauceType());
+//                    String sauce = getUserInput("Choose sauce:");
+//
+//                    switch (sauce) {
+//                        case "1": pizza.setSauceType(SauceType.MARINARA); break;
+//                        case "2": pizza.setSauceType(SauceType.ALFREDO); break;
+//                        case "3": pizza.setSauceType(SauceType.PESTO); break;
+//                        case "4": pizza.setSauceType(SauceType.BBQ); break;
+//                        case "5": pizza.setSauceType(SauceType.BUFFALO); break;
+//                        case "6": pizza.setSauceType(SauceType.OLIVE_OIL); break;
+//                        default:
+//                            System.out.println("❌ Invalid sauce option.");
+//                            continue;
+//                    }
+//                    System.out.println("✅ Selected sauce: " + pizza.getSauceType());
+//                    break;
+//
+//                // 🍖 PREMIUM TOPPINGS
+//                case 4:
+//                    displayPremiumToppingMenu();
+//                    //System.out.println("Original protein toppings" + pizza.getToppings(ToppingType.Premium));
+//                    System.out.println("✅ Added premium topping: ");
+//                    break;
+//
+//                // 🥦 REGULAR TOPPINGS
+//                case 5:
+//                    displayRegularToppingMenu();
+//                    System.out.println("You can choose single or multiple option");
+//                    String regular = getUserInput("Choose topping (1–9):");
+//                    //implement logic handling multiple input
+//                    String regularTopping = "";
+//
+//                    switch (regular) {
+//                        case "1": regularTopping = "Onions"; break;
+//                        case "2": regularTopping = "Mushrooms"; break;
+//                        case "3": regularTopping = "Bell Peppers"; break;
+//                        case "4": regularTopping = "Olives"; break;
+//                        case "5": regularTopping = "Tomatoes"; break;
+//                        case "6": regularTopping = "Spinach"; break;
+//                        case "7": regularTopping = "Basil"; break;
+//                        case "8": regularTopping = "Pineapple"; break;
+//                        case "9": regularTopping = "Anchovies"; break;
+//                        case "0": regularTopping = ""; break;
+//                        default:
+//                            System.out.println("❌ Invalid topping option.");
+//                            continue;
+//                    }
+//                    System.out.println(regularTopping.isEmpty() ? "No toppings" : "✅ Added regular topping: " + regularTopping );
+//                    break;
+//
+//                // 🧀 CHEESE
+//                case 6:
+//                    displayCheeseToppingMenu();
+//                    System.out.println("You can choose single or multiple option");
+//                    String cheeseInput = getUserInput("Choose cheese (1–5):");
+//                    String cheese = "";
+//
+//                    switch (cheeseInput) {
+//                        case "1": cheese = "Mozzarella"; break;
+//                        case "2": cheese = "Parmesan"; break;
+//                        case "3": cheese = "Ricotta"; break;
+//                        case "4": cheese = "Goat Cheese"; break;
+//                        case "5": cheese = "Buffalo"; break;
+//                        default:
+//                            System.out.println("❌ Invalid cheese option.");
+//                            continue;
+//                    }
+//                    System.out.println("✅ Added cheese: " + cheese);
+//                    break;
+//
+//                // 🍽 SIDES
+//                case 7:
+//                    displaySidesMenu();
+//                    String sideInput = getUserInput("Choose side (1–2):");
+//                    String side = "";
+//
+//                    switch (sideInput) {
+//                        case "1": side = "Red Pepper"; break;
+//                        case "2": side = "Parmesan"; break;
+//                        case "0": side = ""; break;
+//                        default:
+//                            System.out.println("❌ Invalid side option.");
+//                            continue;
+//                    }
+//                    System.out.println("✅ Added side: " + side);
+//                    break;
+//                case 8:
+//                    //save pizza
+//                    System.out.println("Adding to your order...");
+//                    System.out.println("Added!");
+//                    running = false;
+//                // 🔙 EXIT
+//                case 0:
+//                    System.out.println("Returning to main menu...");
+//                    running = false;
+//                    break;
+//
+//                default:
+//                    System.out.println("❌ Invalid choice. Please try again.");
+//            }
+//        }
+//
+//        return pizza;
+//    }
 
     public void runDrinksMenu() {
         boolean running = true;
@@ -712,28 +750,76 @@ public class UserInterface {
 
     }
 
+    private CrustType askForCrustType(Runnable displayPizzaCrustMenu) {
+        displayPizzaCrustMenu();
+
+        String crustChoice = getUserInput("Enter crust type: ");
+
+        return CrustType.fromInput(crustChoice);
+
+    }
+
+    private SauceType askForSauceType(Runnable displayPizzaSauceMenu) {
+        displayPizzaSauceMenu();
+
+        String sauceChoice = getUserInput("Enter sauce type: ");
+
+        return SauceType.fromInput(sauceChoice);
+    }
+
+
+
+    private List<String>  getValidInput (String input) {
+        return input.chars()                     // stream of int (Unicode code points)
+                .filter(Character::isDigit)                      // keep only digits
+                .mapToObj(c -> String.valueOf((char) c))         // convert int to String
+                .toList();
+    }
+
     public Pizza getSignaturePizza() {
+        List<Topping> signatureToppings = new ArrayList<>();
+
+        signatureToppings.add(Topping.PEPPERONI);
+        signatureToppings.add(Topping.SAUSAGE);
+        signatureToppings.add(Topping.HAM);
+        signatureToppings.add(Topping.BACON);
+
+        signatureToppings.add(Topping.BELL_PEPPERS);
+        signatureToppings.add(Topping.OLIVES);
+        signatureToppings.add(Topping.TOMATOES);
+
+        signatureToppings.add(Topping.MOZZARELLA);
+        signatureToppings.add(Topping.PARMESAN);
+
         return new Pizza(
                 "Signature",
                 Size.MEDIUM,
                 CrustType.REGULAR,
                 SauceType.ALFREDO,
-                List.of( "Pepperoni", "Sausage", "Ham", "Bacon"),
-                List.of("Bell Peppers", "Olives", "Tomatoes"),
-                List.of("Mozzarella", "Parmesan"),
+                signatureToppings,
                 List.of("Red Pepper")
         );
 
     }
     public Pizza getVeggiePizza() {
+        List<Topping> veggieToppings = new ArrayList<>();
+
+        veggieToppings.add(Topping.BELL_PEPPERS);
+        veggieToppings.add(Topping.OLIVES);
+        veggieToppings.add(Topping.BASIL);
+
+        veggieToppings.add(Topping.ONIONS);
+        veggieToppings.add(Topping.MUSHROOMS);
+        veggieToppings.add(Topping.SPINACH);
+
+        veggieToppings.add(Topping.RICOTTA);
+
         return new Pizza(
                 "Veggie",
                 Size.MEDIUM,
                 CrustType.CAULIFLOWER,
                 SauceType.MARINARA,
-                List.of(),
-                List.of("Bell Peppers", "Olives", "Tomatoes", "Onions", "Mushrooms", "Spinach"),
-                List.of("Ricotta"),
+                veggieToppings,
                 List.of()
         );
 
